@@ -1,3 +1,6 @@
+# Generated Images
+data/images
+
 # Logs
 logs
 *.log
