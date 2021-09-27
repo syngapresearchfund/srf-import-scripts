@@ -1,0 +1,29 @@
+[
+  {
+    "Name": "Companies",
+    "Slug": "companies",
+    "Collection ID": "6094ff07b7cad0ad24d97c3c",
+    "Item ID": "6094ff6971df3f7ef1a75f4f",
+    "Created On": "Fri May 07 2021 08:50:49 GMT+0000 (Coordinated Universal Time)",
+    "Updated On": "Fri May 07 2021 08:50:49 GMT+0000 (Coordinated Universal Time)",
+    "Published On": "Fri May 07 2021 09:09:11 GMT+0000 (Coordinated Universal Time)"
+  },
+  {
+    "Name": "Rare Disease",
+    "Slug": "rare-disease",
+    "Collection ID": "6094ff07b7cad0ad24d97c3c",
+    "Item ID": "6094ff59e3f3a9cbd643ddd6",
+    "Created On": "Fri May 07 2021 08:50:33 GMT+0000 (Coordinated Universal Time)",
+    "Updated On": "Fri May 07 2021 08:50:33 GMT+0000 (Coordinated Universal Time)",
+    "Published On": "Fri May 07 2021 09:09:11 GMT+0000 (Coordinated Universal Time)"
+  },
+  {
+    "Name": "SynGAP",
+    "Slug": "syngap",
+    "Collection ID": "6094ff07b7cad0ad24d97c3c",
+    "Item ID": "6094ff6073c9481df002922e",
+    "Created On": "Fri May 07 2021 08:50:40 GMT+0000 (Coordinated Universal Time)",
+    "Updated On": "Fri May 07 2021 08:50:40 GMT+0000 (Coordinated Universal Time)",
+    "Published On": "Fri May 07 2021 09:09:11 GMT+0000 (Coordinated Universal Time)"
+  }
+]

@@ -1,0 +1,80 @@
+[
+  {
+    "Name": "Ciitizen",
+    "Slug": "ciitizen",
+    "Collection ID": "5fa7dd058c8d6276adb9cd06",
+    "Item ID": "5fa7dd058c8d62f605b9ce0d",
+    "Created On": "Tue Mar 31 2020 10:10:52 GMT+0000 (Coordinated Universal Time)",
+    "Updated On": "Mon Dec 28 2020 17:33:46 GMT+0000 (Coordinated Universal Time)",
+    "Published On": "Mon Dec 28 2020 17:34:26 GMT+0000 (Coordinated Universal Time)",
+    "Description": "Voluptas ducimus recusandae dignissimos quis esse est.\nMagni hic deserunt velit facere quia vitae.\nInventore enim accusamus.\nEaque dolor delectus illum.\nDoloribus omnis quas distinctio repellendus deserunt quam ut perspiciatis sint.\nQuas occ",
+    "Category Image": "https://uploads-ssl.webflow.com/5fa7dd058c8d62f8d5b9cd0c/5fa7dd058c8d628a41b9cdbb_1585649448441-image17.jpg",
+    "Color": "#F44336",
+    "Sort Order": 3
+  },
+  {
+    "Name": "Parent Tips",
+    "Slug": "parent-tips",
+    "Collection ID": "5fa7dd058c8d6276adb9cd06",
+    "Item ID": "5fe25fd13e6ebaa472703df2",
+    "Created On": "Tue Dec 22 2020 21:06:25 GMT+0000 (Coordinated Universal Time)",
+    "Updated On": "Mon Dec 28 2020 17:33:38 GMT+0000 (Coordinated Universal Time)",
+    "Published On": "Mon Dec 28 2020 17:34:26 GMT+0000 (Coordinated Universal Time)",
+    "Description": "",
+    "Category Image": "",
+    "Color": "",
+    "Sort Order": 2
+  },
+  {
+    "Name": "Patient Stories",
+    "Slug": "patient-stories",
+    "Collection ID": "5fa7dd058c8d6276adb9cd06",
+    "Item ID": "5fb22fbfff720494242d9515",
+    "Created On": "Mon Nov 16 2020 07:52:31 GMT+0000 (Coordinated Universal Time)",
+    "Updated On": "Mon Dec 28 2020 17:33:29 GMT+0000 (Coordinated Universal Time)",
+    "Published On": "Mon Dec 28 2020 17:34:26 GMT+0000 (Coordinated Universal Time)",
+    "Description": "",
+    "Category Image": "",
+    "Color": "",
+    "Sort Order": 1
+  },
+  {
+    "Name": "Science",
+    "Slug": "science",
+    "Collection ID": "5fa7dd058c8d6276adb9cd06",
+    "Item ID": "5fa7dd058c8d62fa93b9ce0c",
+    "Created On": "Tue Mar 31 2020 10:10:52 GMT+0000 (Coordinated Universal Time)",
+    "Updated On": "Mon Dec 28 2020 17:34:16 GMT+0000 (Coordinated Universal Time)",
+    "Published On": "Mon Dec 28 2020 17:34:26 GMT+0000 (Coordinated Universal Time)",
+    "Description": "Reiciendis incidunt in nulla officia sit ducimus quo.\nUt veniam deleniti consectetur numquam quam explicabo nihil voluptatibus nesciunt.\nPariatur ad praesentium qui in ad odit.\nRerum omnis inventore voluptas est.\nTempora corrupti quas reiciendis modi sunt dolor et at.\nSit perferendis et cu",
+    "Category Image": "https://uploads-ssl.webflow.com/5fa7dd058c8d62f8d5b9cd0c/5fa7dd058c8d6250c6b9cd16_1585649447906-image1.jpg",
+    "Color": "#2196F3",
+    "Sort Order": 6
+  },
+  {
+    "Name": "SRF News",
+    "Slug": "srf-news",
+    "Collection ID": "5fa7dd058c8d6276adb9cd06",
+    "Item ID": "5fde80d3e1aadfe4ac79a973",
+    "Created On": "Sat Dec 19 2020 22:38:11 GMT+0000 (Coordinated Universal Time)",
+    "Updated On": "Mon Dec 28 2020 17:34:10 GMT+0000 (Coordinated Universal Time)",
+    "Published On": "Mon Dec 28 2020 17:34:26 GMT+0000 (Coordinated Universal Time)",
+    "Description": "",
+    "Category Image": "",
+    "Color": "",
+    "Sort Order": 5
+  },
+  {
+    "Name": "SynGAP Census",
+    "Slug": "syngap-census",
+    "Collection ID": "5fa7dd058c8d6276adb9cd06",
+    "Item ID": "5fde80e81a3d4c5a72ceccc9",
+    "Created On": "Sat Dec 19 2020 22:38:32 GMT+0000 (Coordinated Universal Time)",
+    "Updated On": "Mon Dec 28 2020 17:34:00 GMT+0000 (Coordinated Universal Time)",
+    "Published On": "Mon Dec 28 2020 17:34:26 GMT+0000 (Coordinated Universal Time)",
+    "Description": "",
+    "Category Image": "",
+    "Color": "",
+    "Sort Order": 4
+  }
+]
