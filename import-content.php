@@ -1,10 +1,10 @@
 <?php
 
-require_once '../../../wp-load.php';
+require_once '../wp-load.php';
 
-$post_categories = json_decode( file_get_contents( 'webflow-json/SRF-Blog-Categories.json' ), true );
-$posts           = json_decode( file_get_contents( 'webflow-json/SRF-Blog-Posts.json' ), true );
-$warriors        = json_decode( file_get_contents( 'webflow-json/SRF-Warriors.json' ), true );
+$post_categories = json_decode( file_get_contents( 'data/webflow-json/SRF-Blog-Categories.json' ), true );
+$posts           = json_decode( file_get_contents( 'data/webflow-json/SRF-Blog-Posts.json' ), true );
+$warriors        = json_decode( file_get_contents( 'data/webflow-json/SRF-Warriors.json' ), true );
 
 // Post Categories:
 foreach ( $post_categories as $key => $value ) {
