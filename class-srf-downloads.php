@@ -7,7 +7,7 @@ class SRF_Downloads {
 		$this->data_path = $data_path;
 	}
 	
-	public function download_warrior_images() : void {
+	public function download_warrior_gallery() : void {
 		if ( ! is_string( $this->data_path ) ) {
 			echo 'Error: The data path must be passed in as a string!';
 			return; // exit early
@@ -49,5 +49,5 @@ class SRF_Downloads {
 	}
 }
 
-$warrior_images = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json' );
-$warrior_images->download_warrior_images();
+$warrior_gallery = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json' );
+$warrior_gallery->download_warrior_gallery();
