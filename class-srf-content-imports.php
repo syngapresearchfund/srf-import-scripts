@@ -80,6 +80,7 @@ class SRF_Content_Imports {
 				'post_title'    => $warriors[$key]['Title'],
 				'post_name'    => $warriors[$key]['Slug'],
 				'post_content'  => $warriors[$key]['Full Story'],
+				// TODO: Set post category to an argument
 				'post_category' => array( 2 ),
 				'comment_status' => 'closed',
 				'ping_status' => 'closed',
