@@ -8,7 +8,7 @@ class SRF_Downloads {
 	}
 	
 	public function download_warrior_gallery() : void {
-		if ( ! is_string( $this->data_path ) ) {
+		if ( ! is_string( $this->data_path || empty( $data_path ) ) ) {
 			echo 'Error: The data path must be passed in as a string!';
 			return; // exit early
 		}
