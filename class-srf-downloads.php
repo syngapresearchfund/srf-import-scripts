@@ -49,5 +49,5 @@ class SRF_Downloads {
 	}
 }
 
-$warrior_gallery = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json' );
-$warrior_gallery->download_warrior_gallery();
+// $warrior_gallery = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json' );
+// $warrior_gallery->download_warrior_gallery();
