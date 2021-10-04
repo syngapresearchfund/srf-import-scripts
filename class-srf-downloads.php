@@ -23,14 +23,12 @@ class SRF_Downloads {
 	 * @since 2021-10-03
 	 */
 	public function download_warrior_gallery() : void {
-		$data_set = json_decode( file_get_contents( $this->data_path ), true );
-	
-		foreach ( $data_set as $key => $value ) {
-			$warrior_slug = $data_set[$key]['Slug'];
-			$image_array = explode( '; ', $data_set[$key]['Image Gallery'] );
+		foreach ( $this->data_set as $key => $value ) {
+			$warrior_slug = $this->data_set[$key]['Slug'];
+			$image_array = explode( '; ', $this->data_set[$key]['Image Gallery'] );
 			$i = 0;
 		
-			mkdir( "images/warriors/$warrior_slug", 0777, true );
+			mkdir( "image-galleries/warriors/$warrior_slug", 0777, true );
 	
 			foreach ( $image_array as $image ) {
 				if ( empty( $image ) ) {
@@ -40,7 +38,7 @@ class SRF_Downloads {
 	
 				$file_ext = substr( $image, -4 );
 	
-				file_put_contents( "images/warriors/$warrior_slug/$warrior_slug-$i$file_ext", file_get_contents( $image ) );
+				file_put_contents( "image-galleries/warriors/$warrior_slug/$warrior_slug-$i$file_ext", file_get_contents( $image ) );
 	
 				echo "Success! $warrior_slug-$i$file_ext was successfully downloaded.\n";
 	
@@ -58,33 +56,61 @@ class SRF_Downloads {
 	 *
 	 * @since 2021-10-03
 	 */
-	public function download_warrior_featured_image() : void {
-		$data_set = json_decode( file_get_contents( $this->data_path ), true );
-	
-		foreach ( $data_set as $key => $value ) {
-			$warrior_slug = $data_set[$key]['Slug'];
-			$featured_image = $data_set[$key]['Image Gallery'];
+	public function download_warrior_featured_images() : void {
+		foreach ( $this->data_set as $key => $value ) {
+			$warrior_slug = $this->data_set[$key]['Slug'];
+			$featured_image = $this->data_set[$key]['Primary Photo'];
 		
-			mkdir( "images/warriors/$warrior_slug/featured-image", 0777, true );
+			mkdir( "featured-images/warriors/$warrior_slug/featured-image", 0777, true );
 	
 			if ( empty( $featured_image ) ) {
 				echo "The image gallery for $warrior_slug is empty.\n";
 				continue;
 			}
 
-			$file_ext = substr( $image, -4 );
+			$file_ext = substr( $featured_image, -4 );
 
-			file_put_contents( "images/warriors/$warrior_slug/$warrior_slug-featured$file_ext", file_get_contents( $image ) );
+			file_put_contents( "featured-images/warriors/$warrior_slug/$warrior_slug-featured$file_ext", file_get_contents( $featured_image ) );
 
 			echo "Featured image for $warrior_slug has been downloaded.\n";
 		}
 	
 		echo "Operation complete: All Warrior images have been downloaded to the proper directory. GREAT SUCCESS!";
 	}
+
+	/**
+	 * Download team member featured image.
+	 *
+	 * @since 2021-10-03
+	 */
+	public function download_team_featured_images() : void {
+		foreach ( $this->data_set as $key => $value ) {
+			$team_member_slug = $this->data_set[$key]['Slug'];
+			$featured_image = $this->data_set[$key]['Profile Picture'];
+		
+			mkdir( "featured-images/team-members/$team_member_slug", 0777, true );
+	
+			if ( empty( $featured_image ) ) {
+				echo "The image gallery for $team_member_slug is empty.\n";
+				continue;
+			}
+
+			$file_ext = substr( $featured_image, -4 );
+
+			file_put_contents( "featured-images/team-members/$team_member_slug/$team_member_slug-featured$file_ext", file_get_contents( $featured_image ) );
+
+			echo "Featured image for $team_member_slug has been downloaded.\n";
+		}
+	
+		echo "Operation complete: All Team Member featured images have been downloaded to the proper directory. GREAT SUCCESS!";
+	}
 }
 
 // $warrior_gallery = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json' );
 // $warrior_gallery->download_warrior_gallery();
 
-$warrior_featured_image = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json' );
-$warrior_featured_image->download_warrior_featured_image();
+// $warrior_featured_images = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json' );
+// $warrior_featured_images->download_warrior_featured_images();
+
+$team_featured_images = new SRF_Downloads( 'data/webflow-json/SRF-Team-Members.json' );
+$team_featured_images->download_team_featured_images();
