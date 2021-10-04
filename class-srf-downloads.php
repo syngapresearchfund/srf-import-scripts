@@ -78,23 +78,11 @@ class SRF_Downloads {
 	}
 }
 
-// $warrior_galleries = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json' );
-// $warrior_galleries->download_warrior_galleries();
-
-// $warrior_featured_images = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json' );
-// $warrior_featured_images->download_warrior_featured_images();
-
-// $team_featured_images = new SRF_Downloads( 'data/webflow-json/SRF-Team-Members.json' );
-// $team_featured_images->download_team_featured_images();
-
-// $researcher_featured_images = new SRF_Downloads( 'data/webflow-json/SRF-Researchers.json' );
-// $researcher_featured_images->download_researcher_featured_images();
-
-// $blog_featured_images = new SRF_Downloads( 'data/webflow-json/SRF-Blog-Posts.json' );
-// $blog_featured_images->download_blog_featured_images();
+// $warrior_galleries = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json', 'Image Gallery', 'images/warriors/galleries', true );
+// $warrior_galleries->download_files();
 
 // $event_featured_images = new SRF_Downloads( 'data/webflow-json/SRF-Events.json', 'Image', 'images/events' );
 // $event_featured_images->download_files();
 
-$warrior_galleries = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json', 'Image Gallery', 'images/warriors/galleries', true );
-$warrior_galleries->download_files();
+// $grant_images = new SRF_Downloads( 'data/webflow-json/SRF-Grants.json', 'Grant PDF', 'files/grants/pdf' );
+// $grant_images->download_files();
