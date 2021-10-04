@@ -104,6 +104,33 @@ class SRF_Downloads {
 	
 		echo "Operation complete: All Team Member featured images have been downloaded to the proper directory. GREAT SUCCESS!";
 	}
+
+	/**
+	 * Download researcher featured image.
+	 *
+	 * @since 2021-10-03
+	 */
+	public function download_researcher_featured_images() : void {
+		foreach ( $this->data_set as $key => $value ) {
+			$researcher_slug = $this->data_set[$key]['Slug'];
+			$featured_image = $this->data_set[$key]['Picture'];
+		
+			mkdir( "featured-images/researchers/$researcher_slug", 0777, true );
+	
+			if ( empty( $featured_image ) ) {
+				echo "The image gallery for $researcher_slug is empty.\n";
+				continue;
+			}
+
+			$file_ext = substr( $featured_image, -4 );
+
+			file_put_contents( "featured-images/researchers/$researcher_slug/$researcher_slug-featured$file_ext", file_get_contents( $featured_image ) );
+
+			echo "Featured image for $researcher_slug has been downloaded.\n";
+		}
+	
+		echo "Operation complete: All Researcher featured images have been downloaded to the proper directory. GREAT SUCCESS!";
+	}
 }
 
 // $warrior_gallery = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json' );
@@ -114,3 +141,6 @@ class SRF_Downloads {
 
 $team_featured_images = new SRF_Downloads( 'data/webflow-json/SRF-Team-Members.json' );
 $team_featured_images->download_team_featured_images();
+
+$researcher_featured_images = new SRF_Downloads( 'data/webflow-json/SRF-Researchers.json' );
+$researcher_featured_images->download_researcher_featured_images();
