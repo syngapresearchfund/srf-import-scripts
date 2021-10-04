@@ -64,7 +64,7 @@ class SRF_Downloads {
 			mkdir( "featured-images/warriors/$warrior_slug/featured-image", 0777, true );
 	
 			if ( empty( $featured_image ) ) {
-				echo "The image gallery for $warrior_slug is empty.\n";
+				echo "The image path for $warrior_slug is empty.\n";
 				continue;
 			}
 
@@ -91,7 +91,7 @@ class SRF_Downloads {
 			mkdir( "featured-images/team-members/$team_member_slug", 0777, true );
 	
 			if ( empty( $featured_image ) ) {
-				echo "The image gallery for $team_member_slug is empty.\n";
+				echo "The image path for $team_member_slug is empty.\n";
 				continue;
 			}
 
@@ -118,7 +118,7 @@ class SRF_Downloads {
 			mkdir( "featured-images/researchers/$researcher_slug", 0777, true );
 	
 			if ( empty( $featured_image ) ) {
-				echo "The image gallery for $researcher_slug is empty.\n";
+				echo "The image path for $researcher_slug is empty.\n";
 				continue;
 			}
 
@@ -145,7 +145,7 @@ class SRF_Downloads {
 			mkdir( "featured-images/blog/$post_slug", 0777, true );
 	
 			if ( empty( $featured_image ) ) {
-				echo "The image gallery for $post_slug is empty.\n";
+				echo "The image path for $post_slug is empty.\n";
 				continue;
 			}
 
