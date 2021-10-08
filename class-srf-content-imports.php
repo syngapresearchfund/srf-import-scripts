@@ -133,6 +133,39 @@ class SRF_Content_Imports {
 			wp_insert_post( $args );
 		}
 	}
+
+	// Events:
+	public function import_events(): void {
+		foreach ( $this->data_set as $key => $value ) {
+			// echo $this->data_set[$key]['name'] . "\n";
+			$formatted_date        = strtotime( substr($this->data_set[$key]['Created On'], 0, -29 ) );
+			// $formatted_event_date  = strtotime( substr($this->data_set[$key]['Start Date/Time'], 0, -29 ) );
+			$event_description     = $this->data_set[$key]['Short Description'];
+			$is_published          = $this->data_set[$key]['Published On'];
+
+			$post_content = "<h3>Event Time</h3>\n";
+			$post_content .= $this->data_set[$key]['Start Date/Time Display'] . "\n";
+			$post_content .= !empty( $event_description ) ? $event_description . "\n" : '';
+			$post_content .= "<h3>RSVP</h3>\n";
+			$post_content .= $this->data_set[$key]['RSVP Link'] . "\n";
+
+			$args = array(
+				'post_author'   => 1,
+				'post_date' => date('Y-m-d H:i:s', $formatted_date),
+				'post_title'    => $this->data_set[$key]['Name'],
+				'post_name'    => $this->data_set[$key]['Slug'],
+				'post_content'  => $post_content,
+				// TODO: Set post category to an argument
+				// 'post_category' => array( 9 ),
+				'comment_status' => 'closed',
+				'ping_status' => 'closed',
+				'post_status' => ! empty( $is_published ) ? 'publish' : 'draft',
+				'post_type' => 'srf-events',
+			);
+
+			wp_insert_post( $args );
+		}
+	}
 }
 // $post_categories = new SRF_Content_Imports( './data/webflow-json/SRF-Blog-Categories.json' );
 // $post_categories->import_post_categories();
@@ -146,5 +179,8 @@ class SRF_Content_Imports {
 // $team = new SRF_Content_Imports( './data/webflow-json/SRF-Team-Members.json' );
 // $team->import_team();
 
-$researchers = new SRF_Content_Imports( './data/webflow-json/SRF-Researchers.json' );
-$researchers->import_researchers();
+// $researchers = new SRF_Content_Imports( './data/webflow-json/SRF-Researchers.json' );
+// $researchers->import_researchers();
+
+$events = new SRF_Content_Imports( './data/webflow-json/SRF-Events.json' );
+$events->import_events();
