@@ -82,8 +82,10 @@ class SRF_Downloads {
 	}
 }
 
-$warrior_galleries = new SRF_Downloads( 'data/webflow-api-data/api-srf-warriors.json', 'image-gallery', 'images/warriors/galleries', true );
+$warrior_galleries = new SRF_Downloads( 'data/webflow-api-data/api-srf-warriors-2.json', 'image-gallery', 'images/warriors/galleries', true );
 $warrior_galleries->download_files();
+// $warrior_featured_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-warriors-2.json', 'photo', 'images/warriors/featured-images' );
+// $warrior_featured_images->download_files();
 
 // $event_featured_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-events.json', 'image', 'images/events' );
 // $event_featured_images->download_files();
