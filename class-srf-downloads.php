@@ -25,7 +25,9 @@ class SRF_Downloads {
 			return; // exit early
 		}
 
-		$this->data_set    = json_decode( file_get_contents( $data_path ), true );
+		// $this->data_set = json_decode( file_get_contents( $data_path ), true );
+		$data_items = json_decode( file_get_contents( $data_path ), true );
+		$this->data_set = $data_items['items'];
 		$this->data_key    = $data_key;
 		$this->output_path = $output_path;
 		$this->is_gallery  = $is_gallery;
@@ -38,20 +40,22 @@ class SRF_Downloads {
 	 */
 	public function download_files() : void {
 		foreach ( $this->data_set as $key => $value ) {
-			$item_slug = $this->data_set[$key]['Slug'];
-			$file_path = $this->is_gallery ? explode( '; ', $this->data_set[$key][$this->data_key] ) : $this->data_set[$key][$this->data_key];
-		
-			mkdir( "$this->output_path/$item_slug", 0777, true );
-	
-			if ( empty( $file_path ) ) {
-				echo "The image path for $item_slug is empty.\n";
+			if ( ! isset( $this->data_set[$key][$this->data_key] ) ) {
+				echo "The image path for this item is empty.\n";
 				continue;
 			}
+		
+			$item_slug = $this->data_set[$key]['slug'];
+			$file_path = $this->is_gallery ? $this->data_set[$key][$this->data_key] : $this->data_set[$key][$this->data_key]['url'];
+	
+			mkdir( "$this->output_path/$item_slug", 0777, true );
 
 			if ( $this->is_gallery ) {
 				$i = 0;
 
-				foreach ( $file_path as $file ) {
+				foreach ( $file_path as $file_obj ) {
+					$file = $file_obj['url'];
+
 					if ( empty( $file ) ) {
 						echo "The image gallery for $item_slug is empty.\n";
 						continue;
@@ -78,11 +82,11 @@ class SRF_Downloads {
 	}
 }
 
-// $warrior_galleries = new SRF_Downloads( 'data/webflow-json/SRF-Warriors.json', 'Image Gallery', 'images/warriors/galleries', true );
-// $warrior_galleries->download_files();
+$warrior_galleries = new SRF_Downloads( 'data/webflow-api-data/api-srf-warriors.json', 'image-gallery', 'images/warriors/galleries', true );
+$warrior_galleries->download_files();
 
-// $event_featured_images = new SRF_Downloads( 'data/webflow-json/SRF-Events.json', 'Image', 'images/events' );
+// $event_featured_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-events.json', 'image', 'images/events' );
 // $event_featured_images->download_files();
 
-// $grant_images = new SRF_Downloads( 'data/webflow-json/SRF-Grants.json', 'Grant PDF', 'files/grants/pdf' );
+// $grant_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-grants.json', 'grant-pdf', 'files/grants/pdf' );
 // $grant_images->download_files();
