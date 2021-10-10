@@ -91,10 +91,10 @@ class SRF_Content_Imports {
 
 			$post_content  = isset( $data['job-title'] ) ? '<h2>' . $data['job-title'] . "</h2>\n" : '';
 			$post_content .= $data['bio'] . "\n";
-			$post_content .= isset( $data['email'] ) ? 'Email:' . $data['email'] . "\n" : '';
-			$post_content .= isset( $data['twitter-link'] ) ? 'Twitter:' . $data['twitter-link'] . "\n" : '';
-			$post_content .= isset( $data['facebook-link'] ) ? 'Facebook:' . $data['facebook-link'] . "\n" : '';
-			$post_content .= isset( $data['linkedin'] ) ? 'LinkedIn:' . $data['linkedin'] . "\n" : '';
+			$post_content .= isset( $data['email'] ) ? '<strong>Email:</strong> <a href="' . $data['email'] . '">' . $data['email'] . "</a>\n" : '';
+			$post_content .= isset( $data['twitter-link'] ) ? '<strong>Twitter:</strong> <a href="' . $data['twitter-link'] . '">' . $data['twitter-link'] . "</a>\n" : '';
+			$post_content .= isset( $data['facebook-link'] ) ? '<strong>Facebook:</strong> <a href="' . $data['facebook-link'] . '">' . $data['facebook-link'] . "</a>\n" : '';
+			$post_content .= isset( $data['linkedin'] ) ? '<strong>LinkedIn:</strong> <a href="' . $data['linkedin'] . '">' . $data['linkedin'] . "</a>\n" : '';
 
 			$args = array(
 				'post_author'    => 1,
@@ -121,10 +121,10 @@ class SRF_Content_Imports {
 			$formatted_date = strtotime( $data['published-on'] );
 
 			$post_content  = isset( $data['bio-summary'] ) ? $data['bio-summary'] . "\n" : '';
-			$post_content .= isset( $data['external-link'] ) ? 'Website: ' . $data['external-link'] . "\n" : '';
-			$post_content .= isset( $data['institution'] ) ? 'Institution: ' . $data['institution'] . "\n" : '';
-			$post_content .= isset( $data['institution-link'] ) ? 'Institution Website: ' . $data['institution-link'] . "\n" : '';
-			$post_content .= 'SAB Member: ' . ( $data['sab-member'] ? 'Yes' : "No" );
+			$post_content .= isset( $data['external-link'] ) ? '<strong>Website:</strong> <a href="' . $data['external-link'] . '">' . $data['external-link'] . "</a>\n" : '';
+			$post_content .= isset( $data['institution'] ) ? '<strong>Institution:</strong> ' . $data['institution'] . "\n" : '';
+			$post_content .= isset( $data['institution-link'] ) ? '<strong>Institution Website:</stong>  <a href="' . $data['institution-link'] . '">' . $data['institution-link'] . "</a>\n" : '';
+			$post_content .= '<strong>SAB Member:</strong> ' . ( $data['sab-member'] ? 'Yes' : "No" );
 
 			$args = array(
 				'post_author'    => 1,
