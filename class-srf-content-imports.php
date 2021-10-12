@@ -75,7 +75,7 @@ class SRF_Content_Imports {
 				'comment_status' => 'closed',
 				'ping_status'    => 'closed',
 				'post_status'    => 'publish',
-				'post_type'      => 'srf-people',
+				'post_type'      => 'srf-warriors',
 			);
 
 			wp_insert_post( $args );
@@ -106,7 +106,7 @@ class SRF_Content_Imports {
 				'comment_status' => 'closed',
 				'ping_status'    => 'closed',
 				'post_status'    => 'publish',
-				'post_type'      => 'srf-people',
+				'post_type'      => 'srf-team',
 			);
 
 			wp_insert_post( $args );
@@ -135,15 +135,50 @@ class SRF_Content_Imports {
 				'comment_status' => 'closed',
 				'ping_status'    => 'closed',
 				'post_status'    => 'publish',
-				'post_type'      => 'srf-people',
+				'post_type'      => 'srf-team',
 			);
 
 			wp_insert_post( $args );
 		}
 	}
 
-	// Events:
+	/**
+	 * Imports Events CPT data
+	 */
 	public function import_events(): void {
+		foreach ( $this->data_set as $key => $value ) {
+			// echo $this->data_set[$key]['name'] . "\n";
+			$data              = $this->data_set[$key];
+			// $formatted_date    = strtotime( substr($data['created-on'], 0, -29 ) );
+			$formatted_date    = strtotime( $data['created-on'] );
+			$event_description = isset( $data['short-description'] ) ? $data['short-description'] : '';
+			$is_published      = $data['published-on'];
+
+			$post_content  = "<h3>Event Time</h3>\n";
+			$post_content .= $data['start-date-time-display'] . "\n";
+			$post_content .= ! empty( $event_description ) ? "<h3>Description</h3>\n" . $event_description . "\n" : '';
+			$post_content .= isset( $data['rsvp-link'] ) ? '<h3>RSVP</h3><a href="' . $data['rsvp-link'] . '">' . $data['rsvp-link'] . '</a>' : '';
+
+			$args = array(
+				'post_author'    => 1,
+				'post_date'      => date('Y-m-d H:i:s', $formatted_date),
+				'post_title'     => $data['name'],
+				'post_name'      => $data['slug'],
+				'post_content'   => $post_content,
+				'comment_status' => 'closed',
+				'ping_status'    => 'closed',
+				'post_status'    => ! empty( $is_published ) ? 'publish' : 'draft',
+				'post_type'      => 'srf-events',
+			);
+
+			wp_insert_post( $args );
+		}
+	}
+
+	/**
+	 * Imports Webinars CPT data
+	 */
+	public function import_webinars(): void {
 		foreach ( $this->data_set as $key => $value ) {
 			// echo $this->data_set[$key]['name'] . "\n";
 			$data              = $this->data_set[$key];
@@ -183,8 +218,8 @@ class SRF_Content_Imports {
 // $warriors = new SRF_Content_Imports( './data/webflow-api-data/api-srf-warriors-2.json' );
 // $warriors->import_warriors();
 
-// $team = new SRF_Content_Imports( './data/webflow-api-data/api-srf-team.json' );
-// $team->import_team();
+$team = new SRF_Content_Imports( './data/webflow-api-data/api-srf-team.json' );
+$team->import_team();
 
 // $researchers = new SRF_Content_Imports( './data/webflow-api-data/api-srf-researchers.json' );
 // $researchers->import_researchers();
