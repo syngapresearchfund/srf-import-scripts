@@ -46,7 +46,12 @@ class SRF_Downloads {
 			}
 		
 			$item_slug = $this->data_set[$key]['slug'];
+			$item_date = strtotime( $this->data_set[$key]['created-on'] );
 			$file_path = $this->is_gallery ? $this->data_set[$key][$this->data_key] : $this->data_set[$key][$this->data_key]['url'];
+
+			if ( $item_date <= 1633439483 ) {
+				return;
+			}
 	
 			mkdir( "$this->output_path/$item_slug", 0777, true );
 
@@ -82,9 +87,9 @@ class SRF_Downloads {
 	}
 }
 
-// $warrior_galleries = new SRF_Downloads( 'data/webflow-api-data/api-srf-warriors-2.json', 'image-gallery', 'images/warriors/galleries', true );
+// $warrior_galleries = new SRF_Downloads( 'data/webflow-api-data/api-srf-warriors-3.json', 'image-gallery', 'images/warriors/galleries', true );
 // $warrior_galleries->download_files();
-// $warrior_featured_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-warriors-2.json', 'photo', 'images/warriors/featured-images' );
+// $warrior_featured_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-warriors-3.json', 'photo', 'images/warriors/featured-images' );
 // $warrior_featured_images->download_files();
 
 // $event_featured_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-events.json', 'image', 'images/events' );
@@ -99,8 +104,8 @@ class SRF_Downloads {
 // $researchers_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-researchers.json', 'picture', 'images/researchers' );
 // $researchers_images->download_files();
 
-// $blog_feat_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-posts.json', 'main-image', 'images/blog' );
-// $blog_feat_images->download_files();
+$blog_feat_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-posts-2.json', 'main-image', 'images/blog' );
+$blog_feat_images->download_files();
 
-$grant_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-grants.json', 'image', 'images/grants' );
-$grant_images->download_files();
+// $grant_images = new SRF_Downloads( 'data/webflow-api-data/api-srf-grants.json', 'image', 'images/grants' );
+// $grant_images->download_files();
