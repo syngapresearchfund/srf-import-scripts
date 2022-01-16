@@ -12,7 +12,7 @@ class SRF_Content_Imports {
 		}
 
 		// $this->data_set = json_decode( file_get_contents( $data_path ), true );
-		$data_items = json_decode( file_get_contents( $data_path ), true );
+		$data_items     = json_decode( file_get_contents( $data_path ), true );
 		$this->data_set = $data_items['items'];
 	}
 
@@ -21,11 +21,11 @@ class SRF_Content_Imports {
 		foreach ( $this->data_set as $key => $value ) {
 			// echo $this->data_set[$key]['Name'] . "\n";
 			wp_insert_term(
-				$this->data_set[$key]['name'],
+				$this->data_set[ $key ]['name'],
 				'category',
 				array(
-					'description' => $this->data_set[$key]['description'],
-					'slug' => $this->data_set[$key]['slug'],
+					'description' => $this->data_set[ $key ]['description'],
+					'slug'        => $this->data_set[ $key ]['slug'],
 				)
 			);
 		}
@@ -35,21 +35,21 @@ class SRF_Content_Imports {
 	public function import_posts() : void {
 		foreach ( $this->data_set as $key => $value ) {
 			// echo $this->data_set[$key]['Name'] . "\n";
-			$data           = $this->data_set[$key];
+			$data = $this->data_set[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date = strtotime( $data['published-on'] );
 
 			$args = array(
-				'post_author'   => 1,
-				'post_date' => date( 'Y-m-d H:i:s', $formatted_date ),
-				'post_title'    => $data['name'],
-				'post_name'    => $data['slug'],
-				'post_content'  => $data['post-body'],
+				'post_author'    => 1,
+				'post_date'      => date( 'Y-m-d H:i:s', $formatted_date ),
+				'post_title'     => $data['name'],
+				'post_name'      => $data['slug'],
+				'post_content'   => $data['post-body'],
 				// 'post_category' => array( 5 ),
 				'comment_status' => 'closed',
-				'ping_status' => 'closed',
-				'post_status' => 'publish',
-				'post_type' => 'post',
+				'ping_status'    => 'closed',
+				'post_status'    => 'publish',
+				'post_type'      => 'post',
 			);
 			wp_insert_post( $args );
 		}
@@ -58,7 +58,7 @@ class SRF_Content_Imports {
 	// Warriors:
 	public function import_warriors() : void {
 		foreach ( $this->data_set as $key => $value ) {
-			$data           = $this->data_set[$key];
+			$data = $this->data_set[ $key ];
 			// $formatted_date = strtotime( substr( $data['publication-date'], 0, -29 ) );
 			$formatted_date = strtotime( $data['publication-date'] );
 
@@ -85,7 +85,7 @@ class SRF_Content_Imports {
 	// Team:
 	public function import_team() : void {
 		foreach ( $this->data_set as $key => $value ) {
-			$data           = $this->data_set[$key];
+			$data = $this->data_set[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date = strtotime( $data['published-on'] );
 
@@ -116,7 +116,7 @@ class SRF_Content_Imports {
 	// Researchers:
 	public function import_researchers() : void {
 		foreach ( $this->data_set as $key => $value ) {
-			$data           = $this->data_set[$key];
+			$data = $this->data_set[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date = strtotime( $data['published-on'] );
 
@@ -124,7 +124,7 @@ class SRF_Content_Imports {
 			$post_content .= isset( $data['external-link'] ) ? '<strong>Website:</strong> <a href="' . $data['external-link'] . '">' . $data['external-link'] . "</a>\n" : '';
 			$post_content .= isset( $data['institution'] ) ? '<strong>Institution:</strong> ' . $data['institution'] . "\n" : '';
 			$post_content .= isset( $data['institution-link'] ) ? '<strong>Institution Website:</stong>  <a href="' . $data['institution-link'] . '">' . $data['institution-link'] . "</a>\n" : '';
-			$post_content .= '<strong>SAB Member:</strong> ' . ( $data['sab-member'] ? 'Yes' : "No" );
+			$post_content .= '<strong>SAB Member:</strong> ' . ( $data['sab-member'] ? 'Yes' : 'No' );
 
 			$args = array(
 				'post_author'    => 1,
@@ -148,7 +148,7 @@ class SRF_Content_Imports {
 	public function import_events(): void {
 		foreach ( $this->data_set as $key => $value ) {
 			// echo $this->data_set[$key]['name'] . "\n";
-			$data              = $this->data_set[$key];
+			$data = $this->data_set[ $key ];
 			// $formatted_date    = strtotime( substr($data['created-on'], 0, -29 ) );
 			$formatted_date    = strtotime( $data['created-on'] );
 			$event_description = isset( $data['short-description'] ) ? $data['short-description'] : '';
@@ -161,7 +161,7 @@ class SRF_Content_Imports {
 
 			$args = array(
 				'post_author'    => 1,
-				'post_date'      => date('Y-m-d H:i:s', $formatted_date),
+				'post_date'      => date( 'Y-m-d H:i:s', $formatted_date ),
 				'post_title'     => $data['name'],
 				'post_name'      => $data['slug'],
 				'post_content'   => $post_content,
@@ -181,7 +181,7 @@ class SRF_Content_Imports {
 	public function import_webinars(): void {
 		foreach ( $this->data_set as $key => $value ) {
 			// echo $this->data_set[$key]['name'] . "\n";
-			$data              = $this->data_set[$key];
+			$data = $this->data_set[ $key ];
 			// $formatted_date    = strtotime( substr($data['created-on'], 0, -29 ) );
 			$formatted_date    = strtotime( $data['created-on'] );
 			$event_description = isset( $data['short-description'] ) ? $data['short-description'] : '';
@@ -194,7 +194,7 @@ class SRF_Content_Imports {
 
 			$args = array(
 				'post_author'    => 1,
-				'post_date'      => date('Y-m-d H:i:s', $formatted_date),
+				'post_date'      => date( 'Y-m-d H:i:s', $formatted_date ),
 				'post_title'     => $data['name'],
 				'post_name'      => $data['slug'],
 				'post_content'   => $post_content,
