@@ -16,6 +16,31 @@ class SRF_Content_Imports {
 		$this->data_set = $data_items['items'];
 	}
 
+	// Post Featured Images:
+	public function generate_featured_image( $image_url, $post_id  ) {
+		$upload_dir = wp_upload_dir();
+		$image_data = file_get_contents( $image_url );
+		$filename = basename( $image_url );
+		if( wp_mkdir_p( $upload_dir['path'] ) )
+		  $file = $upload_dir['path'] . '/' . $filename;
+		else
+		  $file = $upload_dir['basedir'] . '/' . $filename;
+		file_put_contents( $file, $image_data );
+	
+		$wp_filetype = wp_check_filetype( $filename, null );
+		$attachment = array(
+			'post_mime_type' => $wp_filetype['type'],
+			'post_title' => sanitize_file_name( $filename ),
+			'post_content' => '',
+			'post_status' => 'inherit'
+		);
+		$attach_id = wp_insert_attachment( $attachment, $file, $post_id );
+		require_once( ABSPATH . 'wp-admin/includes/image.php' );
+		$attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+		$res1= wp_update_attachment_metadata( $attach_id, $attach_data );
+		$res2= set_post_thumbnail( $post_id, $attach_id );
+	}
+
 	// Post Categories:
 	public function import_post_categories() : void {
 		foreach ( $this->data_set as $key => $value ) {
@@ -38,6 +63,8 @@ class SRF_Content_Imports {
 			$data = $this->data_set[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date = strtotime( $data['published-on'] );
+			$featured_image_dir = 'images/blog/' . $data['slug'];
+			$featured_image = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
 
 			$args = array(
 				'post_author'    => 1,
@@ -51,7 +78,11 @@ class SRF_Content_Imports {
 				'post_status'    => 'publish',
 				'post_type'      => 'post',
 			);
-			wp_insert_post( $args );
+			$the_post_id = wp_insert_post( $args );
+			if ( ! empty( $featured_image ) ) {
+				$this->generate_featured_image( 'images/blog/' . $data['slug'] . '/' . $featured_image[2], $the_post_id );
+			}
+			wp_set_post_categories( $the_post_id, 5 );
 		}
 	}
 
@@ -209,17 +240,18 @@ class SRF_Content_Imports {
 	}
 }
 // $post_categories = new SRF_Content_Imports( './data/webflow-api-data/api-srf-blog-categories.json' );
-// $post_categories->import_posts();
+// $post_categories->import_post_categories();
 
-// $posts = new SRF_Content_Imports( './data/webflow-api-data/api-srf-posts.json' );
-// $posts->import_posts();
+// $posts = new SRF_Content_Imports( './data/webflow-api-data/api-srf-posts-1.json' );
+$posts = new SRF_Content_Imports( './data/webflow-api-data/api-srf-posts-2.json' );
+$posts->import_posts();
 
 // $warriors = new SRF_Content_Imports( './data/webflow-api-data/api-srf-warriors.json' );
 // $warriors = new SRF_Content_Imports( './data/webflow-api-data/api-srf-warriors-2.json' );
 // $warriors->import_warriors();
 
-$team = new SRF_Content_Imports( './data/webflow-api-data/api-srf-team.json' );
-$team->import_team();
+// $team = new SRF_Content_Imports( './data/webflow-api-data/api-srf-team.json' );
+// $team->import_team();
 
 // $researchers = new SRF_Content_Imports( './data/webflow-api-data/api-srf-researchers.json' );
 // $researchers->import_researchers();
