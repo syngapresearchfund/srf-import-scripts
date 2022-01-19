@@ -26,8 +26,8 @@ class SRF_Downloads {
 		}
 
 		// $this->data_set = json_decode( file_get_contents( $data_path ), true );
-		$data_items = json_decode( file_get_contents( $data_path ), true );
-		$this->data_set = $data_items['items'];
+		$data_items        = json_decode( file_get_contents( $data_path ), true );
+		$this->data_set    = $data_items['items'];
 		$this->data_key    = $data_key;
 		$this->output_path = $output_path;
 		$this->is_gallery  = $is_gallery;
@@ -50,7 +50,7 @@ class SRF_Downloads {
 			$file_path = $this->is_gallery ? $this->data_set[ $key ][ $this->data_key ] : $this->data_set[ $key ][ $this->data_key ]['url'];
 
 			// if ( $item_date <= 1638921600 ) {
-			// 	return;
+			// return;
 			// }
 
 			mkdir( "$this->output_path/$item_slug", 0777, true );
@@ -83,7 +83,7 @@ class SRF_Downloads {
 			}
 		}
 
-		echo "Operation complete: All files have been downloaded to the proper directory. GREAT SUCCESS!";
+		echo 'Operation complete: All files have been downloaded to the proper directory. GREAT SUCCESS!';
 	}
 }
 

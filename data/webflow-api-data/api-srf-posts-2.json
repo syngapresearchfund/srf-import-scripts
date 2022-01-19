@@ -134,15 +134,8 @@
 			"_id": "5fb22fc27faa0794bab3a2d9"
 		}
 	],
-<<<<<<< HEAD
 	"count": 6,
 	"limit": 100,
 	"offset": 100,
 	"total": 106
-=======
-	"count": 2,
-	"limit": 100,
-	"offset": 100,
-	"total": 102
->>>>>>> e1d7e6c66643cfc7fbb7346fa0852bf78e6c16af
 }

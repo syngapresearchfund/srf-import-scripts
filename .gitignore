@@ -1,6 +1,8 @@
 # Generated Images
 data/images
 images
+images-partial
+images/partial
 
 # Logs
 logs

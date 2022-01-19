@@ -17,28 +17,47 @@ class SRF_Content_Imports {
 	}
 
 	// Post Featured Images:
+	// See https://www.wpexplorer.com/wordpress-featured-image-url/.
 	public function generate_featured_image( $image_url, $post_id  ) {
 		$upload_dir = wp_upload_dir();
 		$image_data = file_get_contents( $image_url );
 		$filename = basename( $image_url );
-		if( wp_mkdir_p( $upload_dir['path'] ) )
+
+		// Check folder permission and define file location
+		if ( wp_mkdir_p( $upload_dir['path'] ) ) {
 		  $file = $upload_dir['path'] . '/' . $filename;
-		else
+		} else {
 		  $file = $upload_dir['basedir'] . '/' . $filename;
+		}
+
+		// Create the image  file on the server
 		file_put_contents( $file, $image_data );
 	
+		// Check image file type
 		$wp_filetype = wp_check_filetype( $filename, null );
+
+		// Set attachment data
 		$attachment = array(
 			'post_mime_type' => $wp_filetype['type'],
 			'post_title' => sanitize_file_name( $filename ),
 			'post_content' => '',
 			'post_status' => 'inherit'
+		
 		);
+		// Create the attachment
 		$attach_id = wp_insert_attachment( $attachment, $file, $post_id );
+		
+		// Include image.php from Core
 		require_once( ABSPATH . 'wp-admin/includes/image.php' );
+
+		// Define attachment metadata
 		$attach_data = wp_generate_attachment_metadata( $attach_id, $file );
-		$res1= wp_update_attachment_metadata( $attach_id, $attach_data );
-		$res2= set_post_thumbnail( $post_id, $attach_id );
+
+		// Assign metadata to attachment
+		wp_update_attachment_metadata( $attach_id, $attach_data );
+
+		// And finally assign featured image to post
+		set_post_thumbnail( $post_id, $attach_id );
 	}
 
 	// Post Categories:
@@ -78,11 +97,14 @@ class SRF_Content_Imports {
 				'post_status'    => 'publish',
 				'post_type'      => 'post',
 			);
-			$the_post_id = wp_insert_post( $args );
+
+			$item_id = wp_insert_post( $args );
+
 			if ( ! empty( $featured_image ) ) {
-				$this->generate_featured_image( 'images/blog/' . $data['slug'] . '/' . $featured_image[2], $the_post_id );
+				$this->generate_featured_image( 'images/blog/' . $data['slug'] . '/' . $featured_image[2], $item_id );
 			}
-			wp_set_post_categories( $the_post_id, 5 );
+
+			wp_set_post_categories( $item_id, 8 );
 		}
 	}
 
@@ -91,7 +113,9 @@ class SRF_Content_Imports {
 		foreach ( $this->data_set as $key => $value ) {
 			$data = $this->data_set[ $key ];
 			// $formatted_date = strtotime( substr( $data['publication-date'], 0, -29 ) );
-			$formatted_date = strtotime( $data['publication-date'] );
+			$formatted_date     = strtotime( $data['publication-date'] );
+			$featured_image_dir = 'images/warriors/current/featured-images/' . $data['slug'];
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
 
 			$post_content  = '<strong>' . $data['age'] . "</strong>\n";
 			$post_content .= '<strong>' . $data['location'] . "</strong>\n";
@@ -109,7 +133,11 @@ class SRF_Content_Imports {
 				'post_type'      => 'srf-warriors',
 			);
 
-			wp_insert_post( $args );
+			$item_id = wp_insert_post( $args );
+
+			if ( ! empty( $featured_image ) ) {
+				$this->generate_featured_image( 'images/warriors/current/featured-images/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+			}
 		}
 	}
 
@@ -118,7 +146,9 @@ class SRF_Content_Imports {
 		foreach ( $this->data_set as $key => $value ) {
 			$data = $this->data_set[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
-			$formatted_date = strtotime( $data['published-on'] );
+			$formatted_date     = strtotime( $data['published-on'] );
+			$featured_image_dir = 'images/team/' . $data['slug'];
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
 
 			$post_content  = isset( $data['job-title'] ) ? '<h2>' . $data['job-title'] . "</h2>\n" : '';
 			$post_content .= $data['bio'] . "\n";
@@ -140,7 +170,11 @@ class SRF_Content_Imports {
 				'post_type'      => 'srf-team',
 			);
 
-			wp_insert_post( $args );
+			$item_id = wp_insert_post( $args );
+
+			if ( ! empty( $featured_image ) ) {
+				$this->generate_featured_image( 'images/team/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+			}
 		}
 	}
 
@@ -149,7 +183,9 @@ class SRF_Content_Imports {
 		foreach ( $this->data_set as $key => $value ) {
 			$data = $this->data_set[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
-			$formatted_date = strtotime( $data['published-on'] );
+			$formatted_date     = strtotime( $data['published-on'] );
+			$featured_image_dir = 'images/researchers/' . $data['slug'];
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
 
 			$post_content  = isset( $data['bio-summary'] ) ? $data['bio-summary'] . "\n" : '';
 			$post_content .= isset( $data['external-link'] ) ? '<strong>Website:</strong> <a href="' . $data['external-link'] . '">' . $data['external-link'] . "</a>\n" : '';
@@ -169,7 +205,11 @@ class SRF_Content_Imports {
 				'post_type'      => 'srf-team',
 			);
 
-			wp_insert_post( $args );
+			$item_id = wp_insert_post( $args );
+
+			if ( ! empty( $featured_image ) ) {
+				$this->generate_featured_image( 'images/researchers/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+			}
 		}
 	}
 
@@ -184,6 +224,9 @@ class SRF_Content_Imports {
 			$formatted_date    = strtotime( $data['created-on'] );
 			$event_description = isset( $data['short-description'] ) ? $data['short-description'] : '';
 			$is_published      = $data['published-on'];
+
+			$featured_image_dir = 'images/events/' . $data['slug'];
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
 
 			$post_content  = "<h3>Event Time</h3>\n";
 			$post_content .= $data['start-date-time-display'] . "\n";
@@ -202,12 +245,22 @@ class SRF_Content_Imports {
 				'post_type'      => 'srf-events',
 			);
 
-			wp_insert_post( $args );
+			$item_id = wp_insert_post( $args );
+
+			if ( ! empty( $featured_image ) ) {
+				$this->generate_featured_image( 'images/events/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+			}
 		}
 	}
 
 	/**
 	 * Imports Webinars CPT data
+	 * 
+	 * NOTE: This will probably not end up being used as a CPT. Instead
+	 * we will use a taxonomy under events and have the various event types there. We
+	 * can then split things up in the same way we have split up the Team CPT.
+	 * 
+	 * Taxonomies: Fundraisers, Live Events (?), Webinars, anything else? 
 	 */
 	public function import_webinars(): void {
 		foreach ( $this->data_set as $key => $value ) {
@@ -242,12 +295,12 @@ class SRF_Content_Imports {
 // $post_categories = new SRF_Content_Imports( './data/webflow-api-data/api-srf-blog-categories.json' );
 // $post_categories->import_post_categories();
 
-// $posts = new SRF_Content_Imports( './data/webflow-api-data/api-srf-posts-1.json' );
-$posts = new SRF_Content_Imports( './data/webflow-api-data/api-srf-posts-2.json' );
+$posts = new SRF_Content_Imports( './data/webflow-api-data/api-srf-posts-1.json' );
+// $posts = new SRF_Content_Imports( './data/webflow-api-data/api-srf-posts-2.json' );
 $posts->import_posts();
 
-// $warriors = new SRF_Content_Imports( './data/webflow-api-data/api-srf-warriors.json' );
-// $warriors = new SRF_Content_Imports( './data/webflow-api-data/api-srf-warriors-2.json' );
+// $warriors = new SRF_Content_Imports( './data/webflow-api-data/api-srf-warriors-3.json' );
+// $warriors = new SRF_Content_Imports( './data/webflow-api-data/api-srf-warriors-4.json' );
 // $warriors->import_warriors();
 
 // $team = new SRF_Content_Imports( './data/webflow-api-data/api-srf-team.json' );
