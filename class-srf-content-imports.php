@@ -81,9 +81,9 @@ class SRF_Content_Imports {
 			// echo $this->data_set[$key]['Name'] . "\n";
 			$data = $this->data_set[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
-			$formatted_date = strtotime( $data['published-on'] );
+			$formatted_date     = strtotime( $data['published-on'] );
 			$featured_image_dir = 'images/blog/' . $data['slug'];
-			$featured_image = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
 
 			$args = array(
 				'post_author'    => 1,
@@ -104,7 +104,7 @@ class SRF_Content_Imports {
 				$this->generate_featured_image( 'images/blog/' . $data['slug'] . '/' . $featured_image[2], $item_id );
 			}
 
-			wp_set_post_categories( $item_id, 8 );
+			// wp_set_post_categories( $item_id, 8 );
 		}
 	}
 
@@ -295,8 +295,8 @@ class SRF_Content_Imports {
 // $post_categories = new SRF_Content_Imports( './data/webflow-api-data/api-srf-blog-categories.json' );
 // $post_categories->import_post_categories();
 
-$posts = new SRF_Content_Imports( './data/webflow-api-data/api-srf-posts-1.json' );
-// $posts = new SRF_Content_Imports( './data/webflow-api-data/api-srf-posts-2.json' );
+// $posts = new SRF_Content_Imports( './data/webflow-api-data/api-srf-posts-1.json' );
+$posts = new SRF_Content_Imports( './data/webflow-api-data/api-srf-posts-2.json' );
 $posts->import_posts();
 
 // $warriors = new SRF_Content_Imports( './data/webflow-api-data/api-srf-warriors-3.json' );
