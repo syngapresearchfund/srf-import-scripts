@@ -1,4 +1,5 @@
 <?php
+/* phpcs:ignoreFile -- auto-generated build file - OK to ignore linting. */
 
 class SRF_Downloads {
 	private $data_set;
