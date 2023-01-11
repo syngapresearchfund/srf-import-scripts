@@ -17,9 +17,19 @@ class SRF_Content_Imports {
 	public function __construct( $url, $type ) {
 		if ( ! is_string( $url ) || ! is_string( $type ) ) {
 			echo 'Error: The type and URL must be passed in as a string!';
-			return; // exit early
+			return; // exit early.
 		}
 
+		// Compare with a specific date when needing to only import the latest items.
+		// TODO: Abstract this to an optional variable that we can pass in and check against.
+		// Determine if this needs to go here in the constructor OR directly on the method.
+		// if ( $item_date <= 1638921600 ) {
+		// return;
+		// }
+
+		// TODO: Figure out how to update each post to use blocks in the post content, as opposed to the Classic block.
+
+		// Retrieve the CMS data from a locally downloaded JSON file.
 		// $this->api_data = json_decode( file_get_contents( $url ), true );
 		// $data_items     = json_decode( file_get_contents( $url ), true );
 		// $this->api_data = $data_items['items'];

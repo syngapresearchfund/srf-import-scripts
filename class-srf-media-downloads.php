@@ -50,6 +50,8 @@ class SRF_Media_Downloads {
 			$item_date = strtotime( $this->data_set[ $key ]['created-on'] );
 			$file_path = $this->is_gallery ? $this->data_set[ $key ][ $this->data_key ] : $this->data_set[ $key ][ $this->data_key ]['url'];
 
+			// Compare with a specific date when needing to only import the latest items.
+			// TODO: Abstract this to an optional variable that we can pass in and check against.
 			// if ( $item_date <= 1638921600 ) {
 			// return;
 			// }
