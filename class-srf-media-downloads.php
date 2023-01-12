@@ -5,9 +5,10 @@ class SRF_Media_Downloads {
 	private $data_set;
 	private $data_key;
 	private $output_path;
+	private $since_timestamp; // timestamp format - e.g., 1638921600
 	private $is_gallery;
 
-	public function __construct( $data_path, $data_key, $output_path, $is_gallery = false ) {
+	public function __construct( $data_path, $data_key, $output_path, $date = null, $is_gallery = false ) {
 		if ( ! is_string( $data_path ) ) {
 			echo 'Error: The data path must be passed in as a string!';
 			return; // exit early.
@@ -24,6 +25,10 @@ class SRF_Media_Downloads {
 		if ( ! ini_get( 'allow_url_fopen' ) ) {
 			echo 'Error: allow_url_fopen is not enabled in your environment!';
 			return; // exit early.
+		}
+
+		if ( isset( $date ) ) {
+			$this->since_timestamp = $date;
 		}
 
 		// $this->data_set = json_decode( file_get_contents( $data_path ), true );
@@ -51,10 +56,9 @@ class SRF_Media_Downloads {
 			$file_path = $this->is_gallery ? $this->data_set[ $key ][ $this->data_key ] : $this->data_set[ $key ][ $this->data_key ]['url'];
 
 			// Compare with a specific date when needing to only import the latest items.
-			// TODO: Abstract this to an optional variable that we can pass in and check against.
-			// if ( $item_date <= 1638921600 ) {
-			// return;
-			// }
+			if ( $item_date <= $this->since_timestamp ) {
+				return;
+			}
 
 			mkdir( "$this->output_path/$item_slug", 0777, true );
 

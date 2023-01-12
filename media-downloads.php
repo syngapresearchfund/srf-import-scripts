@@ -19,8 +19,8 @@ require_once './class-srf-media-downloads.php';
 // $researchers_images = new SRF_Media_Downloads( 'data/webflow-api-data/api-srf-researchers.json', 'picture', 'images/researchers' );
 // $researchers_images->download_files();
 
-$blog_feat_images = new SRF_Media_Downloads( 'data/webflow-api-data/api-srf-posts-2.json', 'main-image', 'images/blog/set-2' );
-$blog_feat_images->download_files();
+$blog_feat_images = new SRF_Media_Downloads( 'data/webflow-api-data/api-srf-posts-2.json', 'main-image', 'images/blog/set-2', 1638921600 );
+// $blog_feat_images->download_files();
 
 // $grant_images = new SRF_Media_Downloads( 'data/webflow-api-data/api-srf-grants.json', 'image', 'images/grants' );
 // $grant_images->download_files();

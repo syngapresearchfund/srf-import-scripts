@@ -12,9 +12,14 @@ class SRF_Content_Imports {
 	private $api_data;
 
 	/**
+	 * Timestamp for when to upload the latest set of data.
+	 */
+	private $since_timestamp;
+
+	/**
 	 * Constructor
 	 */
-	public function __construct( $url, $type ) {
+	public function __construct( $url, $type, $date = null ) {
 		if ( ! is_string( $url ) || ! is_string( $type ) ) {
 			echo 'Error: The type and URL must be passed in as a string!';
 			return; // exit early.
@@ -42,6 +47,10 @@ class SRF_Content_Imports {
 		// $this->api_data = $body['items'];
 
 		// var_dump( $this->api_data );
+
+		if ( isset( $date ) ) {
+			$this->since_timestamp = $date;
+		}
 
 		switch ( $type ) {
 			case 'posts':
@@ -334,12 +343,13 @@ class SRF_Content_Imports {
 			// echo $this->api_data[$key]['name'] . "\n";
 			$data = $this->api_data[ $key ];
 			// $formatted_date    = strtotime( substr($data['created-on'], 0, -29 ) );
-			$formatted_date    = strtotime( $data['created-on'] );
-			$event_description = isset( $data['description'] ) ? $data['description'] : '';
-			$is_published      = $data['published-on'];
+			$formatted_date       = strtotime( $data['created-on'] );
+			$formatted_event_date = isset( $data['date-time'] ) ? strtotime( $data['date-time'] ) : '';
+			$event_description    = isset( $data['description'] ) ? $data['description'] : '';
+			$is_published         = $data['published-on'];
 
 			$post_content  = "<h3>Event Time</h3>\n";
-			$post_content .= ! empty( $data['date-time'] ) ? $data['date-time'] . "\n" : '';
+			$post_content .= ! empty( $formatted_event_date ) ? date( 'F j, Y \a\t g:i a', $formatted_event_date ) . "\n" : '';
 			$post_content .= ! empty( $event_description ) ? "<h3>Description</h3>\n" . $event_description . "\n" : '';
 			$post_content .= isset( $data['webinar-registration-link'] ) ? '<h3>RSVP</h3><a href="' . $data['webinar-registration-link'] . '">' . $data['webinar-registration-link'] . '</a>' : '';
 
