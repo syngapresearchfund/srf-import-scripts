@@ -17,20 +17,19 @@ class SRF_Content_Imports {
 	private $since_timestamp;
 
 	/**
-	 * Constructor
+	 * Constructor.
+	 *
+	 * @param string $url Path to API endpoint.
+	 * @param string $type Post type to parse.
+	 * @param string $date Date since last import. Passed in as string with '1970-01-01' format.
+	 *
+	 * @since 2021-10-03
 	 */
-	public function __construct( $url, $type, $date = null ) {
+	public function __construct( $url, $type, $date = '' ) {
 		if ( ! is_string( $url ) || ! is_string( $type ) ) {
 			echo 'Error: The type and URL must be passed in as a string!';
 			return; // exit early.
 		}
-
-		// Compare with a specific date when needing to only import the latest items.
-		// TODO: Abstract this to an optional variable that we can pass in and check against.
-		// Determine if this needs to go here in the constructor OR directly on the method.
-		// if ( $item_date <= 1638921600 ) {
-		// return;
-		// }
 
 		// TODO: Figure out how to update each post to use blocks in the post content, as opposed to the Classic block.
 
@@ -48,9 +47,17 @@ class SRF_Content_Imports {
 
 		// var_dump( $this->api_data );
 
-		if ( isset( $date ) ) {
-			$this->since_timestamp = $date;
+		if ( ! empty( $date ) ) {
+			$date_time             = new DateTime( $date );
+			$this->since_timestamp = $date_time->format( 'U' );
 		}
+
+		// Compare with a specific date when needing to only import the latest items.
+		// TODO: Compare the $since_timestamp to the item date in the loop for each method.
+		// Determine if this needs to go here in the constructor OR directly on the method. - It should go on the method in the iterators.
+		// if ( $item_date <= 1638921600 ) {
+		// return;
+		// }
 
 		switch ( $type ) {
 			case 'posts':

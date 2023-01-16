@@ -8,7 +8,18 @@ class SRF_Media_Downloads {
 	private $since_timestamp; // timestamp format - e.g., 1638921600
 	private $is_gallery;
 
-	public function __construct( $data_path, $data_key, $output_path, $date = null, $is_gallery = false ) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param string $data_path Path to API endpoint.
+	 * @param string $data_key CMS content type for API endpoint path.
+	 * @param string $data_key Local location to download images to.
+	 * @param string $date Date since last import. Passed in as string with '1970-01-01' format.
+	 * @param string $is_gallery Is media a part of an image gallery or not.
+	 *
+	 * @since 2021-10-03
+	 */
+	public function __construct( $data_path, $data_key, $output_path, $date = '', $is_gallery = false ) {
 		if ( ! is_string( $data_path ) ) {
 			echo 'Error: The data path must be passed in as a string!';
 			return; // exit early.
@@ -27,8 +38,9 @@ class SRF_Media_Downloads {
 			return; // exit early.
 		}
 
-		if ( isset( $date ) ) {
-			$this->since_timestamp = $date;
+		if ( ! empty( $date ) ) {
+			$date_time = new DateTime($date); 
+			$this->since_timestamp = $date_time->format('U');
 		}
 
 		// $this->data_set = json_decode( file_get_contents( $data_path ), true );
