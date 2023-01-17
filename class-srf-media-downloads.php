@@ -49,6 +49,8 @@ class SRF_Media_Downloads {
 		$this->data_key    = $data_key;
 		$this->output_path = $output_path;
 		$this->is_gallery  = $is_gallery;
+
+		$this->download_files();
 	}
 
 	/**
