@@ -7,9 +7,14 @@ require_once '../../wp-load.php';
  */
 class SRF_Content_Imports {
 	/**
-	 * CMS data from the Webflow API (JSON formatted)
+	 * CMS data from the Webflow API (JSON formatted).
 	 */
 	private $api_data;
+
+	/**
+	 * Content type for importing into WordPress.
+	 */
+	private $content_type;
 
 	/**
 	 * Timestamp for when to upload the latest set of data.
@@ -31,7 +36,8 @@ class SRF_Content_Imports {
 			return; // exit early.
 		}
 
-		// TODO: Figure out how to update each post to use blocks in the post content, as opposed to the Classic block.
+		// Set content type.
+		$this->content_type = $type;
 
 		// Retrieve the CMS data from a locally downloaded JSON file.
 		// $this->api_data = json_decode( file_get_contents( $url ), true );
@@ -44,8 +50,6 @@ class SRF_Content_Imports {
 		$formatted_response = json_decode( $body, true );
 		$this->api_data     = $formatted_response['items'];
 		// $this->api_data = $body['items'];
-
-		// var_dump( $this->api_data );
 
 		if ( ! empty( $date ) ) {
 			$date_time             = new DateTime( $date );
@@ -87,11 +91,11 @@ class SRF_Content_Imports {
 	}
 
 	/**
-	 * Sets Featured Images for Posts
+	 * Uploads images as attachments. Sets Featured Images for Posts.
 	 *
 	 * See https://www.wpexplorer.com/wordpress-featured-image-url/
 	 */
-	public function generate_featured_image( $image_url, $post_id ) {
+	public function upload_post_images( $image_url, $post_id ) {
 		$upload_dir = wp_upload_dir();
 		$image_data = file_get_contents( $image_url );
 		$filename   = basename( $image_url );
@@ -129,6 +133,7 @@ class SRF_Content_Imports {
 		// Assign metadata to attachment.
 		wp_update_attachment_metadata( $attach_id, $attach_data );
 
+		// TODO: May be able to conditionally omit this for uploading gallery images to Warriors. Will need to update with some conditional logic and params to pass in for Warrior uploads (we already have the content type so we can use that).
 		// And finally assign featured image to post.
 		set_post_thumbnail( $post_id, $attach_id );
 	}
@@ -159,8 +164,13 @@ class SRF_Content_Imports {
 			$data = $this->api_data[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['published-on'] );
-			$featured_image_dir = 'images/blog/' . $data['slug'];
+			$featured_image_dir = 'images/blog/latest/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
+
+			// Compare with a specific date when needing to only import the latest items.
+			if ( $formatted_date <= $this->since_timestamp ) {
+				return;
+			}
 
 			$args = array(
 				'post_author'    => 1,
@@ -178,7 +188,7 @@ class SRF_Content_Imports {
 			$item_id = wp_insert_post( $args );
 
 			if ( ! empty( $featured_image ) ) {
-				$this->generate_featured_image( 'images/blog/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+				$this->upload_post_images( 'images/blog/latest/' . $data['slug'] . '/' . $featured_image[2], $item_id );
 			}
 
 			// wp_set_post_categories( $item_id, 8 );
@@ -193,8 +203,14 @@ class SRF_Content_Imports {
 			$data = $this->api_data[ $key ];
 			// $formatted_date = strtotime( substr( $data['publication-date'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['publication-date'] );
-			$featured_image_dir = 'images/warriors/current/featured-images/' . $data['slug'];
+			$featured_image_dir = 'images/warriors/latest/featured-images/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
+			$gallery_dir        = 'images/warriors/latest/galleries/' . $data['slug'];
+
+			// Compare with a specific date when needing to only import the latest items.
+			if ( $formatted_date <= $this->since_timestamp ) {
+				return;
+			}
 
 			$post_content  = '<strong>' . $data['age'] . "</strong>\n";
 			$post_content .= '<strong>' . $data['location'] . "</strong>\n";
@@ -215,7 +231,7 @@ class SRF_Content_Imports {
 			$item_id = wp_insert_post( $args );
 
 			if ( ! empty( $featured_image ) ) {
-				$this->generate_featured_image( 'images/warriors/current/featured-images/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+				$this->upload_post_images( 'images/warriors/latest/featured-images/' . $data['slug'] . '/' . $featured_image[2], $item_id );
 			}
 		}
 	}
@@ -228,8 +244,13 @@ class SRF_Content_Imports {
 			$data = $this->api_data[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['published-on'] );
-			$featured_image_dir = 'images/team/' . $data['slug'];
+			$featured_image_dir = 'images/team/latest/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
+
+			// Compare with a specific date when needing to only import the latest items.
+			if ( $formatted_date <= $this->since_timestamp ) {
+				return;
+			}
 
 			$post_content  = isset( $data['job-title'] ) ? '<h2>' . $data['job-title'] . "</h2>\n" : '';
 			$post_content .= $data['bio'] . "\n";
@@ -254,7 +275,7 @@ class SRF_Content_Imports {
 			$item_id = wp_insert_post( $args );
 
 			if ( ! empty( $featured_image ) ) {
-				$this->generate_featured_image( 'images/team/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+				$this->upload_post_images( 'images/team/latest/' . $data['slug'] . '/' . $featured_image[2], $item_id );
 			}
 		}
 	}
@@ -267,8 +288,13 @@ class SRF_Content_Imports {
 			$data = $this->api_data[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['published-on'] );
-			$featured_image_dir = 'images/researchers/' . $data['slug'];
+			$featured_image_dir = 'images/researchers/latest/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
+
+			// Compare with a specific date when needing to only import the latest items.
+			if ( $formatted_date <= $this->since_timestamp ) {
+				return;
+			}
 
 			$post_content  = isset( $data['bio-summary'] ) ? $data['bio-summary'] . "\n" : '';
 			$post_content .= isset( $data['external-link'] ) ? '<strong>Website:</strong> <a href="' . $data['external-link'] . '">' . $data['external-link'] . "</a>\n" : '';
@@ -291,7 +317,7 @@ class SRF_Content_Imports {
 			$item_id = wp_insert_post( $args );
 
 			if ( ! empty( $featured_image ) ) {
-				$this->generate_featured_image( 'images/researchers/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+				$this->upload_post_images( 'images/researchers/latest/' . $data['slug'] . '/' . $featured_image[2], $item_id );
 			}
 		}
 	}
@@ -308,7 +334,12 @@ class SRF_Content_Imports {
 			$event_description = isset( $data['short-description'] ) ? $data['short-description'] : '';
 			$is_published      = $data['published-on'];
 
-			$featured_image_dir = 'images/events/' . $data['slug'];
+			// Compare with a specific date when needing to only import the latest items.
+			if ( $formatted_date <= $this->since_timestamp ) {
+				return;
+			}
+
+			$featured_image_dir = 'images/events/latest/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
 
 			$post_content  = "<h3>Event Time</h3>\n";
@@ -331,7 +362,7 @@ class SRF_Content_Imports {
 			$item_id = wp_insert_post( $args );
 
 			if ( ! empty( $featured_image ) ) {
-				$this->generate_featured_image( 'images/events/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+				$this->upload_post_images( 'images/events/latest/' . $data['slug'] . '/' . $featured_image[2], $item_id );
 			}
 		}
 	}
@@ -354,6 +385,11 @@ class SRF_Content_Imports {
 			$formatted_event_date = isset( $data['date-time'] ) ? strtotime( $data['date-time'] ) : '';
 			$event_description    = isset( $data['description'] ) ? $data['description'] : '';
 			$is_published         = $data['published-on'];
+
+			// Compare with a specific date when needing to only import the latest items.
+			if ( $formatted_date <= $this->since_timestamp ) {
+				return;
+			}
 
 			$post_content  = "<h3>Event Time</h3>\n";
 			$post_content .= ! empty( $formatted_event_date ) ? date( 'F j, Y \a\t g:i a', $formatted_event_date ) . "\n" : '';
