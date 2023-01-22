@@ -95,7 +95,7 @@ class SRF_Content_Imports {
 	 *
 	 * See https://www.wpexplorer.com/wordpress-featured-image-url/
 	 */
-	public function upload_post_images( $image_url, $post_id ) {
+	public function upload_post_images( $image_url, $post_id, $set_featured = true ) {
 		$upload_dir = wp_upload_dir();
 		$image_data = file_get_contents( $image_url );
 		$filename   = basename( $image_url );
@@ -135,7 +135,9 @@ class SRF_Content_Imports {
 
 		// TODO: May be able to conditionally omit this for uploading gallery images to Warriors. Will need to update with some conditional logic and params to pass in for Warrior uploads (we already have the content type so we can use that).
 		// And finally assign featured image to post.
-		set_post_thumbnail( $post_id, $attach_id );
+		if ( $set_featured ) {
+			set_post_thumbnail( $post_id, $attach_id );
+		}
 	}
 
 	/**
@@ -143,7 +145,6 @@ class SRF_Content_Imports {
 	 */
 	public function import_post_categories() : void {
 		foreach ( $this->api_data as $key => $value ) {
-			// echo $this->api_data[$key]['Name'] . "\n";
 			wp_insert_term(
 				$this->api_data[ $key ]['name'],
 				'category',
@@ -165,10 +166,10 @@ class SRF_Content_Imports {
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['published-on'] );
 			$featured_image_dir = 'images/blog/latest/' . $data['slug'];
-			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
 
 			// Compare with a specific date when needing to only import the latest items.
-			if ( $formatted_date <= $this->since_timestamp ) {
+			if ( isset( $this->since_timestamp ) && $formatted_date <= $this->since_timestamp ) {
 				return;
 			}
 
@@ -188,7 +189,7 @@ class SRF_Content_Imports {
 			$item_id = wp_insert_post( $args );
 
 			if ( ! empty( $featured_image ) ) {
-				$this->upload_post_images( 'images/blog/latest/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
 			}
 
 			// wp_set_post_categories( $item_id, 8 );
@@ -204,11 +205,12 @@ class SRF_Content_Imports {
 			// $formatted_date = strtotime( substr( $data['publication-date'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['publication-date'] );
 			$featured_image_dir = 'images/warriors/latest/featured-images/' . $data['slug'];
-			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
 			$gallery_dir        = 'images/warriors/latest/galleries/' . $data['slug'];
+			$gallery_images     = is_dir( $gallery_dir ) ? scandir( $gallery_dir ) : array();
 
 			// Compare with a specific date when needing to only import the latest items.
-			if ( $formatted_date <= $this->since_timestamp ) {
+			if ( isset( $this->since_timestamp ) && $formatted_date <= $this->since_timestamp ) {
 				return;
 			}
 
@@ -231,7 +233,12 @@ class SRF_Content_Imports {
 			$item_id = wp_insert_post( $args );
 
 			if ( ! empty( $featured_image ) ) {
-				$this->upload_post_images( 'images/warriors/latest/featured-images/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
+			}
+			if ( ! empty( $gallery_images ) ) {
+				for ( $i = 2, $ii = count( $gallery_images ); $i < $ii; $i++ ) {
+					$this->upload_post_images( $gallery_dir . '/' . $gallery_images[ $i ], $item_id, false );
+				}
 			}
 		}
 	}
@@ -245,10 +252,10 @@ class SRF_Content_Imports {
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['published-on'] );
 			$featured_image_dir = 'images/team/latest/' . $data['slug'];
-			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
 
 			// Compare with a specific date when needing to only import the latest items.
-			if ( $formatted_date <= $this->since_timestamp ) {
+			if ( isset( $this->since_timestamp ) && $formatted_date <= $this->since_timestamp ) {
 				return;
 			}
 
@@ -275,7 +282,7 @@ class SRF_Content_Imports {
 			$item_id = wp_insert_post( $args );
 
 			if ( ! empty( $featured_image ) ) {
-				$this->upload_post_images( 'images/team/latest/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
 			}
 		}
 	}
@@ -289,10 +296,10 @@ class SRF_Content_Imports {
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['published-on'] );
 			$featured_image_dir = 'images/researchers/latest/' . $data['slug'];
-			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
 
 			// Compare with a specific date when needing to only import the latest items.
-			if ( $formatted_date <= $this->since_timestamp ) {
+			if ( isset( $this->since_timestamp ) && $formatted_date <= $this->since_timestamp ) {
 				return;
 			}
 
@@ -317,7 +324,7 @@ class SRF_Content_Imports {
 			$item_id = wp_insert_post( $args );
 
 			if ( ! empty( $featured_image ) ) {
-				$this->upload_post_images( 'images/researchers/latest/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
 			}
 		}
 	}
@@ -335,12 +342,12 @@ class SRF_Content_Imports {
 			$is_published      = $data['published-on'];
 
 			// Compare with a specific date when needing to only import the latest items.
-			if ( $formatted_date <= $this->since_timestamp ) {
+			if ( isset( $this->since_timestamp ) && $formatted_date <= $this->since_timestamp ) {
 				return;
 			}
 
 			$featured_image_dir = 'images/events/latest/' . $data['slug'];
-			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : '';
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
 
 			$post_content  = "<h3>Event Time</h3>\n";
 			$post_content .= $data['start-date-time-display'] . "\n";
@@ -362,7 +369,7 @@ class SRF_Content_Imports {
 			$item_id = wp_insert_post( $args );
 
 			if ( ! empty( $featured_image ) ) {
-				$this->upload_post_images( 'images/events/latest/' . $data['slug'] . '/' . $featured_image[2], $item_id );
+				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
 			}
 		}
 	}
@@ -387,7 +394,7 @@ class SRF_Content_Imports {
 			$is_published         = $data['published-on'];
 
 			// Compare with a specific date when needing to only import the latest items.
-			if ( $formatted_date <= $this->since_timestamp ) {
+			if ( isset( $this->since_timestamp ) && $formatted_date <= $this->since_timestamp ) {
 				return;
 			}
 
