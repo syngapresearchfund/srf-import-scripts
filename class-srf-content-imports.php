@@ -85,6 +85,9 @@ class SRF_Content_Imports {
 			case 'events':
 				$this->import_events();
 				break;
+			case 'grants':
+				$this->import_grants();
+				break;
 			default:
 				echo 'No matching type found. Please try again.';
 		}
@@ -165,7 +168,7 @@ class SRF_Content_Imports {
 			$data = $this->api_data[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['published-on'] );
-			$featured_image_dir = 'images/blog/latest/' . $data['slug'];
+			$featured_image_dir = 'images/latest/blog/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
 
 			// Compare with a specific date when needing to only import the latest items.
@@ -175,7 +178,7 @@ class SRF_Content_Imports {
 
 			$args = array(
 				'post_author'    => 1,
-				'post_date'      => date( 'Y-m-d H:i:s', $formatted_date ),
+				'post_date'      => gmdate( 'Y-m-d H:i:s', $formatted_date ),
 				'post_title'     => $data['name'],
 				'post_name'      => $data['slug'],
 				'post_content'   => $data['post-body'],
@@ -204,9 +207,9 @@ class SRF_Content_Imports {
 			$data = $this->api_data[ $key ];
 			// $formatted_date = strtotime( substr( $data['publication-date'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['publication-date'] );
-			$featured_image_dir = 'images/warriors/latest/featured-images/' . $data['slug'];
+			$featured_image_dir = 'images/latest/warriors/featured-images/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
-			$gallery_dir        = 'images/warriors/latest/galleries/' . $data['slug'];
+			$gallery_dir        = 'images/latest/warriors/galleries/' . $data['slug'];
 			$gallery_images     = is_dir( $gallery_dir ) ? scandir( $gallery_dir ) : array();
 
 			// Compare with a specific date when needing to only import the latest items.
@@ -220,7 +223,7 @@ class SRF_Content_Imports {
 
 			$args = array(
 				'post_author'    => 1,
-				'post_date'      => date( 'Y-m-d H:i:s', $formatted_date ),
+				'post_date'      => gmdate( 'Y-m-d H:i:s', $formatted_date ),
 				'post_title'     => $data['name'],
 				'post_name'      => $data['slug'],
 				'post_content'   => $post_content,
@@ -250,12 +253,12 @@ class SRF_Content_Imports {
 		foreach ( $this->api_data as $key => $value ) {
 			$data = $this->api_data[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
-			$formatted_date     = strtotime( $data['published-on'] );
-			$featured_image_dir = 'images/team/latest/' . $data['slug'];
+			$formatted_date     = isset( $data['published-on'] ) ? strtotime( $data['published-on'] ) : strtotime( $data['created-on'] );
+			$featured_image_dir = 'images/latest/team/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
 
 			// Compare with a specific date when needing to only import the latest items.
-			if ( isset( $this->since_timestamp ) && $formatted_date <= $this->since_timestamp ) {
+			if ( isset( $this->since_timestamp ) && ( $formatted_date <= $this->since_timestamp ) ) {
 				return;
 			}
 
@@ -268,7 +271,7 @@ class SRF_Content_Imports {
 
 			$args = array(
 				'post_author'    => 1,
-				'post_date'      => date( 'Y-m-d H:i:s', $formatted_date ),
+				'post_date'      => gmdate( 'Y-m-d H:i:s', $formatted_date ),
 				'post_title'     => $data['name'],
 				'post_name'      => $data['slug'],
 				'post_excerpt'   => isset( $data['bio-summary'] ) ?: '',
@@ -295,7 +298,7 @@ class SRF_Content_Imports {
 			$data = $this->api_data[ $key ];
 			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['published-on'] );
-			$featured_image_dir = 'images/researchers/latest/' . $data['slug'];
+			$featured_image_dir = 'images/latest/researchers/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
 
 			// Compare with a specific date when needing to only import the latest items.
@@ -306,12 +309,11 @@ class SRF_Content_Imports {
 			$post_content  = isset( $data['bio-summary'] ) ? $data['bio-summary'] . "\n" : '';
 			$post_content .= isset( $data['external-link'] ) ? '<strong>Website:</strong> <a href="' . $data['external-link'] . '">' . $data['external-link'] . "</a>\n" : '';
 			$post_content .= isset( $data['institution'] ) ? '<strong>Institution:</strong> ' . $data['institution'] . "\n" : '';
-			$post_content .= isset( $data['institution-link'] ) ? '<strong>Institution Website:</stong>  <a href="' . $data['institution-link'] . '">' . $data['institution-link'] . "</a>\n" : '';
-			$post_content .= '<strong>SAB Member:</strong> ' . ( $data['sab-member'] ? 'Yes' : 'No' );
+			$post_content .= isset( $data['institution-link'] ) ? '<strong>Institution Website:</strong>  <a href="' . $data['institution-link'] . '">' . $data['institution-link'] . "</a>\n" : '';
 
 			$args = array(
 				'post_author'    => 1,
-				'post_date'      => date( 'Y-m-d H:i:s', $formatted_date ),
+				'post_date'      => gmdate( 'Y-m-d H:i:s', $formatted_date ),
 				'post_title'     => $data['name'],
 				'post_name'      => $data['slug'],
 				'post_content'   => $post_content,
@@ -322,6 +324,14 @@ class SRF_Content_Imports {
 			);
 
 			$item_id = wp_insert_post( $args );
+
+			// TODO: Continue investigating why it is not working to set categories.
+			// if ( $data['sab-member'] ) {
+			// wp_set_object_terms( $item_id, array( 52 ), 'category' );
+			// }
+			// if ( $data['cab-member'] ) {
+			// wp_set_object_terms( $item_id, array( 51 ), 'category' );
+			// }
 
 			if ( ! empty( $featured_image ) ) {
 				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
@@ -346,7 +356,7 @@ class SRF_Content_Imports {
 				return;
 			}
 
-			$featured_image_dir = 'images/events/latest/' . $data['slug'];
+			$featured_image_dir = 'images/latest/events/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
 
 			$post_content  = "<h3>Event Time</h3>\n";
@@ -356,7 +366,7 @@ class SRF_Content_Imports {
 
 			$args = array(
 				'post_author'    => 1,
-				'post_date'      => date( 'Y-m-d H:i:s', $formatted_date ),
+				'post_date'      => gmdate( 'Y-m-d H:i:s', $formatted_date ),
 				'post_title'     => $data['name'],
 				'post_name'      => $data['slug'],
 				'post_content'   => $post_content,
@@ -405,7 +415,7 @@ class SRF_Content_Imports {
 
 			$args = array(
 				'post_author'    => 1,
-				'post_date'      => date( 'Y-m-d H:i:s', $formatted_date ),
+				'post_date'      => gmdate( 'Y-m-d H:i:s', $formatted_date ),
 				'post_title'     => $data['name'],
 				'post_name'      => $data['slug'],
 				'post_content'   => $post_content,
@@ -416,6 +426,61 @@ class SRF_Content_Imports {
 			);
 
 			wp_insert_post( $args );
+		}
+	}
+
+	/**
+	 * Imports Grants data
+	 */
+	public function import_grants(): void {
+		foreach ( $this->api_data as $key => $value ) {
+			// echo $this->api_data[$key]['name'] . "\n";
+			$data = $this->api_data[ $key ];
+			// $formatted_date    = strtotime( substr($data['created-on'], 0, -29 ) );
+			$formatted_date    = strtotime( $data['created-on'] );
+			$grant_number      = isset( $data['grant-number'] ) ? $data['grant-number'] : '';
+			$funding_amount    = isset( $data['funding-amount-display'] ) ? $data['funding-amount-display'] : '';
+			$percent_dispersed = isset( $data['percent-disbursed'] ) ? strval( $data['percent-disbursed'] ) : '';
+			$is_published      = $data['published-on'];
+
+			// Compare with a specific date when needing to only import the latest items.
+			if ( isset( $this->since_timestamp ) && $formatted_date <= $this->since_timestamp ) {
+				return;
+			}
+
+			$featured_image_dir = 'images/latest/grants/' . $data['slug'];
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
+			$grant_pdf_dir      = 'documents/latest/grants/' . $data['slug'];
+			$grant_pdf          = is_dir( $grant_pdf_dir ) ? scandir( $grant_pdf_dir ) : array();
+
+			$post_content  = isset( $data['purpose'] ) ? $data['purpose'] . "\n" : '';
+			$post_content .= '<strong>Grant Number:</strong> ' . $grant_number . "\n";
+			$post_content .= '<strong>Funding Amount:</strong> ' . $funding_amount . "\n";
+			$post_content .= '<strong>Percentage Dispersed:</strong> ' . $percent_dispersed . "% Dispersed\n";
+			$post_content .= '<strong>Grant Status:</strong> Signed & active';
+
+			$args = array(
+				'post_author'    => 1,
+				'post_date'      => gmdate( 'Y-m-d H:i:s', $formatted_date ),
+				'post_title'     => $data['name'],
+				'post_name'      => $data['slug'],
+				'post_content'   => $post_content,
+				'post_excerpt'   => ( ! empty( $grant_number ) && ! empty( $funding_amount ) ) ? $grant_number . ' – ' . $funding_amount : '',
+				'comment_status' => 'closed',
+				'ping_status'    => 'closed',
+				'post_status'    => ! empty( $is_published ) ? 'publish' : 'draft',
+				'tax_input'      => array( 'srf-resources-category' => '59' ),
+				'post_type'      => 'srf-resources',
+			);
+
+			$item_id = wp_insert_post( $args );
+
+			if ( ! empty( $featured_image ) ) {
+				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
+			}
+			if ( ! empty( $grant_pdf ) ) {
+				$this->upload_post_images( $grant_pdf_dir . '/' . $grant_pdf[2], $item_id, false );
+			}
 		}
 	}
 }
