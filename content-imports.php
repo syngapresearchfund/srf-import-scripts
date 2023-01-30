@@ -30,7 +30,7 @@ require_once './class-srf-content-imports.php';
 
 // TODO: Need new method for this - set a category in as Resources CPT
 // Import for Movies (Patient Stories from Webflow API).
-// $movies = new SRF_Content_Imports( 'https://api.webflow.com/collections/5fff2adfcd939f5bdc4e73de/items?access_token=2ea8f0e8e54e14d9f0a362a021a54eb2552117c28ccf9e278b1dc6fdda444d1a&api_version=1.0.0', 'movies' );
+$movies = new SRF_Content_Imports( 'https://api.webflow.com/collections/5fff2adfcd939f5bdc4e73de/items?access_token=2ea8f0e8e54e14d9f0a362a021a54eb2552117c28ccf9e278b1dc6fdda444d1a&api_version=1.0.0', 'movies' );
 
 // TODO: Also need to import Studies, Sponsors, Press Releases, Org Partners, Knowledge Center - possibly set all as a category in Resources CPT
 // It may make sense for

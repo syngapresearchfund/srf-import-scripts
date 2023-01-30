@@ -88,6 +88,9 @@ class SRF_Content_Imports {
 			case 'grants':
 				$this->import_grants();
 				break;
+			case 'movies':
+				$this->import_movies();
+				break;
 			default:
 				echo 'No matching type found. Please try again.';
 		}
@@ -474,6 +477,55 @@ class SRF_Content_Imports {
 			);
 
 			$item_id = wp_insert_post( $args );
+
+			if ( ! empty( $featured_image ) ) {
+				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
+			}
+			if ( ! empty( $grant_pdf ) ) {
+				$this->upload_post_images( $grant_pdf_dir . '/' . $grant_pdf[2], $item_id, false );
+			}
+		}
+	}
+
+	/**
+	 * Imports Movies data
+	 */
+	public function import_movies(): void {
+		foreach ( $this->api_data as $key => $value ) {
+			// echo $this->api_data[$key]['name'] . "\n";
+			$data = $this->api_data[ $key ];
+			// $formatted_date    = strtotime( substr($data['created-on'], 0, -29 ) );
+			$formatted_date = strtotime( $data['created-on'] );
+			$is_published   = $data['published-on'];
+
+			// Compare with a specific date when needing to only import the latest items.
+			if ( isset( $this->since_timestamp ) && $formatted_date <= $this->since_timestamp ) {
+				return;
+			}
+
+			$featured_image_dir = 'images/latest/movies/' . $data['slug'];
+			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
+			$grant_pdf_dir      = 'documents/latest/grants/' . $data['slug'];
+			$grant_pdf          = is_dir( $grant_pdf_dir ) ? scandir( $grant_pdf_dir ) : array();
+
+			$post_content  = isset( $data['top-rich-text'] ) ? $data['top-rich-text'] . "\n" : '';
+			$post_content .= isset( $data['video-link']['url'] ) ? $data['video-link']['url'] . "\n" : '';
+
+			$args = array(
+				'post_author'    => 1,
+				'post_date'      => gmdate( 'Y-m-d H:i:s', $formatted_date ),
+				'post_title'     => $data['name'],
+				'post_name'      => $data['slug'],
+				'post_content'   => $post_content,
+				'comment_status' => 'closed',
+				'ping_status'    => 'closed',
+				'post_status'    => ! empty( $is_published ) ? 'publish' : 'draft',
+				'post_type'      => 'srf-resources',
+			);
+
+			$item_id = wp_insert_post( $args );
+
+			// wp_set_object_terms( $item_id, 'movies', 'srf-resources', true ); // Didn't work :(
 
 			if ( ! empty( $featured_image ) ) {
 				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );

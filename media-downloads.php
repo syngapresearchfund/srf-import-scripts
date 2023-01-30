@@ -25,4 +25,7 @@ require_once './class-srf-media-downloads.php';
 
 // Grant Downloads
 // $grant_images = new SRF_Media_Downloads( 'https://api.webflow.com/collections/5fb28e7a6744e975d9c5f59d/items?access_token=2ea8f0e8e54e14d9f0a362a021a54eb2552117c28ccf9e278b1dc6fdda444d1a&api_version=1.0.0', 'image', 'images/2023-01-22/grants' );
-$grant_images = new SRF_Media_Downloads( 'https://api.webflow.com/collections/5fb28e7a6744e975d9c5f59d/items?access_token=2ea8f0e8e54e14d9f0a362a021a54eb2552117c28ccf9e278b1dc6fdda444d1a&api_version=1.0.0', 'grant-pdf', 'documents/2023-01-26/grants' );
+// $grant_images = new SRF_Media_Downloads( 'https://api.webflow.com/collections/5fb28e7a6744e975d9c5f59d/items?access_token=2ea8f0e8e54e14d9f0a362a021a54eb2552117c28ccf9e278b1dc6fdda444d1a&api_version=1.0.0', 'grant-pdf', 'documents/2023-01-26/grants' );
+
+// Movie Downloads
+$movies = new SRF_Media_Downloads( 'https://api.webflow.com/collections/5fff2adfcd939f5bdc4e73de/items?access_token=2ea8f0e8e54e14d9f0a362a021a54eb2552117c28ccf9e278b1dc6fdda444d1a&api_version=1.0.0', 'list-video-thumbnail', 'images/2023-01-22/movies' );
