@@ -525,7 +525,8 @@ class SRF_Content_Imports {
 
 			$item_id = wp_insert_post( $args );
 
-			// wp_set_object_terms( $item_id, 'movies', 'srf-resources', true ); // Didn't work :(
+			// Didn't work :(
+			wp_set_object_terms( $item_id, 'movies', 'srf-resources', true );
 
 			if ( ! empty( $featured_image ) ) {
 				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
