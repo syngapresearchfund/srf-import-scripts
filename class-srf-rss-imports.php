@@ -1,6 +1,7 @@
 <?php
 
-require_once './wp-load.php';
+require_once ABSPATH . 'wp-load.php';
+require_once ABSPATH . 'wp-admin/includes/post.php';
 
 /**
  * Imports podcast content from RSS feed.
@@ -77,39 +78,35 @@ class SRF_RSS_Imports {
 		$rss_items = $this->feed_data->get_items( 0, $max_items );
 
 		foreach ( $rss_items as $item ) {
-//			$formatted_date     = strtotime( $data['published-on'] );
-//			$featured_image_dir = 'images/latest/blog/' . $data['slug'];
-//			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
-
 			$post_title   = $item->get_title();
 			$post_content = $item->get_content();
 			$post_date    = $item->get_date( 'Y-m-d H:i:s' );
-
-			// Get the enclosure (if it exists)
-			$enclosure = $item->get_enclosure();
-
-			if ( $enclosure ) {
-				$video_url  = $enclosure->get_link(); // Extract the video URL from the enclosure
-				$media_type = $enclosure->get_type(); // Get the MIME type of the enclosure (e.g., video/mp4)
-
-				// Check if the enclosure is a video file
-				if ( str_contains( $media_type, 'video' ) ) {
-					echo "Video URL: " . $video_url . "\n";
-				}
-			}
+			$enclosure    = $item->get_enclosure(); // Get the enclosure (if it exists)
 
 			// Compare with a specific date when needing to only import the latest items.
 			if ( isset( $this->since_timestamp ) && $post_date <= $this->since_timestamp ) {
 				return;
 			}
 			// Check if the post already exists to avoid duplicates
-//			if ( ! post_exists( $post_title ) ) {
-//				return;
-//			}
+			if ( post_exists( $post_title ) ) {
+				return;
+			}
+
+			if ( $enclosure ) {
+				$video_url    = $enclosure->get_link(); // Extract the video URL from the enclosure
+				$post_content = $video_url . $post_content;
+			}
+
+			// Get the iTunes image if it exists
+			$itunes_image = $item->get_item_tags( 'http://www.itunes.com/dtds/podcast-1.0.dtd', 'image' );
+
+			if ( ! empty( $itunes_image ) && isset( $itunes_image[0]['attribs']['']['href'] ) ) {
+				$image_url = $itunes_image[0]['attribs']['']['href'];
+			}
 
 			$args = array(
 				'post_title'   => $post_title,
-				'post_content' => ! empty( $video_url ) ? $video_url : '' . $post_content,
+				'post_content' => $post_content,
 				'post_status'  => 'publish',
 				'post_author'  => 1,
 				'post_date'    => $post_date,
@@ -122,13 +119,13 @@ class SRF_RSS_Imports {
 				wp_set_object_terms( $item_id, $this->content_terms, $this->content_taxonomy );
 			}
 
-			// TODO: See if we need to add featured images to the posts.
-//			if ( ! empty( $featured_image ) ) {
-//				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
-//			}
+			// Upload the post image if it exists.
+			// TODO: It may be more performant to construct an array of image URLs and post IDs to pass into the upload_post_images method. This way the upload_post_images method will only be executed once.
+			if ( ! empty( $image_url ) ) {
+				$this->upload_post_images( $image_url, $item_id );
+			}
 
-			// We likely don't need to Set the post categories.
-			// wp_set_post_categories( $item_id, 8 );
+			echo "Podcast ID " . $item_id . " has been successfully imported!\n";
 		}
 	}
 
