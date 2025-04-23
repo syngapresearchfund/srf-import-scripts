@@ -13,7 +13,7 @@ class SRF_Media_Downloads {
 	 * 
 	 * @param string $data_path Path to API endpoint.
 	 * @param string $data_key CMS content type for API endpoint path.
-	 * @param string $data_key Local location to download images to.
+	 * @param string $output_path Local location to download images to.
 	 * @param string $date Date since last import. Passed in as string with '1970-01-01' format.
 	 * @param string $is_gallery Is media a part of an image gallery or not.
 	 *
