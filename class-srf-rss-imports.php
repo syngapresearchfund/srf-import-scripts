@@ -43,12 +43,6 @@ class SRF_RSS_Imports {
 	 * @since 2021-10-03
 	 */
 	public function __construct( string $url, string $type, $tax = '', $terms = '', string $date = '' ) {
-//		if ( ! is_string( $url ) || ! is_string( $type ) ) {
-//			echo 'Error: The type and URL must be passed in as a string!';
-//
-//			return; // exit early.
-//		}
-
 		// Set content type.
 		$this->content_type     = $type;
 		$this->content_taxonomy = $tax;

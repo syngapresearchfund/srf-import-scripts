@@ -39,30 +39,18 @@ class SRF_Content_Imports {
 		// Set content type.
 		$this->content_type = $type;
 
-		// Retrieve the CMS data from a locally downloaded JSON file.
-		// $this->api_data = json_decode( file_get_contents( $url ), true );
-		// $data_items     = json_decode( file_get_contents( $url ), true );
-		// $this->api_data = $data_items['items'];
-
 		// Retrieve the CMS data from the Webflow API.
 		$response           = wp_remote_get( $url );
 		$body               = wp_remote_retrieve_body( $response );
 		$formatted_response = json_decode( $body, true );
 		$this->api_data     = $formatted_response['items'];
-		// $this->api_data = $body['items'];
 
 		if ( ! empty( $date ) ) {
 			$date_time             = new DateTime( $date );
 			$this->since_timestamp = $date_time->format( 'U' );
 		}
 
-		// Compare with a specific date when needing to only import the latest items.
-		// TODO: Compare the $since_timestamp to the item date in the loop for each method.
-		// Determine if this needs to go here in the constructor OR directly on the method. - It should go on the method in the iterators.
-		// if ( $item_date <= 1638921600 ) {
-		// return;
-		// }
-
+		// Routes content import based on type parameter to appropriate import method.
 		switch ( $type ) {
 			case 'posts':
 				$this->import_posts();
@@ -167,9 +155,7 @@ class SRF_Content_Imports {
 	 */
 	public function import_posts() : void {
 		foreach ( $this->api_data as $key => $value ) {
-			// echo $this->api_data[$key]['Name'] . "\n";
 			$data = $this->api_data[ $key ];
-			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['published-on'] );
 			$featured_image_dir = 'images/latest/blog/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
@@ -185,7 +171,6 @@ class SRF_Content_Imports {
 				'post_title'     => $data['name'],
 				'post_name'      => $data['slug'],
 				'post_content'   => $data['post-body'],
-				// 'post_category' => array( 5 ),
 				'comment_status' => 'closed',
 				'ping_status'    => 'closed',
 				'post_status'    => 'publish',
@@ -197,8 +182,6 @@ class SRF_Content_Imports {
 			if ( ! empty( $featured_image ) ) {
 				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
 			}
-
-			// wp_set_post_categories( $item_id, 8 );
 		}
 	}
 
@@ -208,7 +191,6 @@ class SRF_Content_Imports {
 	public function import_warriors() : void {
 		foreach ( $this->api_data as $key => $value ) {
 			$data = $this->api_data[ $key ];
-			// $formatted_date = strtotime( substr( $data['publication-date'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['publication-date'] );
 			$featured_image_dir = 'images/latest/warriors/featured-images/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
@@ -255,7 +237,6 @@ class SRF_Content_Imports {
 	public function import_team() : void {
 		foreach ( $this->api_data as $key => $value ) {
 			$data = $this->api_data[ $key ];
-			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date     = isset( $data['published-on'] ) ? strtotime( $data['published-on'] ) : strtotime( $data['created-on'] );
 			$featured_image_dir = 'images/latest/team/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
@@ -299,7 +280,6 @@ class SRF_Content_Imports {
 	public function import_researchers() : void {
 		foreach ( $this->api_data as $key => $value ) {
 			$data = $this->api_data[ $key ];
-			// $formatted_date = strtotime( substr( $data['published-on'], 0, -29 ) );
 			$formatted_date     = strtotime( $data['published-on'] );
 			$featured_image_dir = 'images/latest/researchers/' . $data['slug'];
 			$featured_image     = is_dir( $featured_image_dir ) ? scandir( $featured_image_dir ) : array();
@@ -328,14 +308,6 @@ class SRF_Content_Imports {
 
 			$item_id = wp_insert_post( $args );
 
-			// TODO: Continue investigating why it is not working to set categories.
-			// if ( $data['sab-member'] ) {
-			// wp_set_object_terms( $item_id, array( 52 ), 'category' );
-			// }
-			// if ( $data['cab-member'] ) {
-			// wp_set_object_terms( $item_id, array( 51 ), 'category' );
-			// }
-
 			if ( ! empty( $featured_image ) ) {
 				$this->upload_post_images( $featured_image_dir . '/' . $featured_image[2], $item_id );
 			}
@@ -347,9 +319,7 @@ class SRF_Content_Imports {
 	 */
 	public function import_events(): void {
 		foreach ( $this->api_data as $key => $value ) {
-			// echo $this->api_data[$key]['name'] . "\n";
 			$data = $this->api_data[ $key ];
-			// $formatted_date    = strtotime( substr($data['created-on'], 0, -29 ) );
 			$formatted_date    = strtotime( $data['created-on'] );
 			$event_description = isset( $data['short-description'] ) ? $data['short-description'] : '';
 			$is_published      = $data['published-on'];
@@ -398,9 +368,7 @@ class SRF_Content_Imports {
 	 */
 	public function import_webinars(): void {
 		foreach ( $this->api_data as $key => $value ) {
-			// echo $this->api_data[$key]['name'] . "\n";
 			$data = $this->api_data[ $key ];
-			// $formatted_date    = strtotime( substr($data['created-on'], 0, -29 ) );
 			$formatted_date       = strtotime( $data['created-on'] );
 			$formatted_event_date = isset( $data['date-time'] ) ? strtotime( $data['date-time'] ) : '';
 			$event_description    = isset( $data['description'] ) ? $data['description'] : '';
@@ -437,9 +405,7 @@ class SRF_Content_Imports {
 	 */
 	public function import_grants(): void {
 		foreach ( $this->api_data as $key => $value ) {
-			// echo $this->api_data[$key]['name'] . "\n";
 			$data = $this->api_data[ $key ];
-			// $formatted_date    = strtotime( substr($data['created-on'], 0, -29 ) );
 			$formatted_date    = strtotime( $data['created-on'] );
 			$grant_number      = isset( $data['grant-number'] ) ? $data['grant-number'] : '';
 			$funding_amount    = isset( $data['funding-amount-display'] ) ? $data['funding-amount-display'] : '';
@@ -492,9 +458,7 @@ class SRF_Content_Imports {
 	 */
 	public function import_movies(): void {
 		foreach ( $this->api_data as $key => $value ) {
-			// echo $this->api_data[$key]['name'] . "\n";
 			$data = $this->api_data[ $key ];
-			// $formatted_date    = strtotime( substr($data['created-on'], 0, -29 ) );
 			$formatted_date = strtotime( $data['created-on'] );
 			$is_published   = $data['published-on'];
 
@@ -525,7 +489,7 @@ class SRF_Content_Imports {
 
 			$item_id = wp_insert_post( $args );
 
-			// Didn't work :(
+			// TODO: Continue investigating why it is not working to set categories.
 			wp_set_object_terms( $item_id, 'movies', 'srf-resources', true );
 
 			if ( ! empty( $featured_image ) ) {
